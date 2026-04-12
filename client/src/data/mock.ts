@@ -17,6 +17,23 @@ export interface Guide {
   isOnline: boolean;
   city: string;
   works: string[];
+  
+  // 扩展字段 - 支持详细详情页
+  category?: 'scenic' | 'food' | 'outdoor' | 'culture' | 'art' | 'business' | 'escape' | 'camping'; // 分类
+  location?: string; // 具体地点
+  duration?: string; // 时长
+  difficulty?: number; // 难度 1-5
+  groupSize?: string; // 人数
+  horrorLevel?: '微恐' | '中恐' | '重恐'; // 恐怖等级
+  features?: string[]; // 特色标签
+  pricePerPerson?: number; // 人均价格
+  certifications?: string[]; // 认证
+  services?: { title: string; items: string[] }[]; // 服务内容
+  schedule?: { day: number; items: { time: string; activity: string }[] }[]; // 行程
+  includes?: string[]; // 包含服务
+  equipment?: { provided: string[]; self: string[] }; // 装备清单
+  resources?: string[]; // 资源网络
+  warning?: string; // 安全提示
 }
 
 const img = (seed: string, w = 400, h = 300) =>
@@ -28,9 +45,112 @@ export const MOCK_GUIDES: Guide[] = [
   { id: 3, name: '大刘', avatar: img('guide3', 100, 100), level: 'featured', rating: 4.9, orderCount: 256, tags: ['徒步', '登山', '户外'], priceHourly: 100, priceHalfDay: 400, priceFullDay: 700, bio: '国家登山协会认证向导，10年户外经验，安全第一风景第二！', coverImage: img('guide3-cover', 800, 400), distance: '2.5km', isOnline: false, city: '张家界', works: [img('work3a', 200, 200), img('work3b', 200, 200), img('work3c', 200, 200), img('work3d', 200, 200)] },
   { id: 4, name: '小周', avatar: img('guide4', 100, 100), level: 'featured', rating: 5.0, orderCount: 89, tags: ['历史', '讲解', '古建'], priceHourly: 90, priceHalfDay: 380, priceFullDay: 650, bio: '历史系研究生，专门研究明清建筑，故宫就是我家后花园。', coverImage: img('guide4-cover', 800, 400), distance: '3.1km', isOnline: true, city: '北京', works: [img('work4a', 200, 200), img('work4b', 200, 200), img('work4c', 200, 200), img('work4d', 200, 200)] },
   { id: 5, name: '晓晓', avatar: img('guide5', 100, 100), level: 'newcomer', rating: 4.7, orderCount: 18, tags: ['文艺', '咖啡', '打卡'], priceHourly: 60, priceHalfDay: 250, priceFullDay: 450, bio: '厦门文艺女青年，知道所有隐藏咖啡馆和拍照圣地。', coverImage: img('guide5-cover', 800, 400), distance: '1.5km', isOnline: true, city: '厦门', works: [img('work5a', 200, 200), img('work5b', 200, 200), img('work5c', 200, 200), img('work5d', 200, 200)] },
-  { id: 6, name: '老张', avatar: img('guide6', 100, 100), level: 'featured', rating: 4.8, orderCount: 198, tags: ['商务', '翻译', '英语'], priceHourly: 150, priceHalfDay: 600, priceFullDay: 1000, bio: '前外企高管，英语商务陪同，擅长企业对接和展会翻译。', coverImage: img('guide6-cover', 800, 400), distance: '4.2km', isOnline: true, city: '上海', works: [img('work6a', 200, 200), img('work6b', 200, 200), img('work6c', 200, 200), img('work6d', 200, 200)] },
-  { id: 7, name: '阿妹', avatar: img('guide7', 100, 100), level: 'newcomer', rating: 4.6, orderCount: 12, tags: ['密室', '剧本杀', '组局'], priceHourly: 40, priceHalfDay: 180, priceFullDay: 300, bio: '密室老玩家，剧本杀组局达人，帮你凑人开本！', coverImage: img('guide7-cover', 800, 400), distance: '0.5km', isOnline: true, city: '杭州', works: [img('work7a', 200, 200), img('work7b', 200, 200), img('work7c', 200, 200), img('work7d', 200, 200)] },
-  { id: 8, name: '王哥', avatar: img('guide8', 100, 100), level: 'featured', rating: 4.9, orderCount: 312, tags: ['自驾', '露营', '户外'], priceHourly: 120, priceHalfDay: 500, priceFullDay: 800, bio: '房车旅行达人，走过318川藏线10次，露营老司机。', coverImage: img('guide8-cover', 800, 400), distance: '5.0km', isOnline: false, city: '成都', works: [img('work8a', 200, 200), img('work8b', 200, 200), img('work8c', 200, 200), img('work8d', 200, 200)] },
+  { id: 6, name: '老张', avatar: img('guide6', 100, 100), level: 'featured', rating: 4.8, orderCount: 198, tags: ['商务', '翻译', '英语'], priceHourly: 150, priceHalfDay: 600, priceFullDay: 1000, bio: '前外企高管，英语商务陪同，擅长企业对接和展会翻译。', coverImage: img('guide6-cover', 800, 400), distance: '4.2km', isOnline: true, city: '上海', works: [img('work6a', 200, 200), img('work6b', 200, 200), img('work6c', 200, 200), img('work6d', 200, 200)],
+    
+    // 商务陪同详细数据
+    category: 'business',
+    location: '上海全域（可全国出差）',
+    duration: '全天8h / 半天4h / 晚宴3h / 接送2h',
+    groupSize: '1-5人',
+    features: ['机场接送', '会议陪同', '商务宴请', '企业对接', '翻译服务'],
+    pricePerPerson: 800,
+    certifications: ['高级商务陪同认证', 'CATTI一级翻译', '专车司机证', '前500强商务总监'],
+    services: [
+      { 
+        title: '🤝 商务接待', 
+        items: [
+          '机场接送（豪车接送，礼仪规范）',
+          '会议陪同（翻译，记录，协调）',
+          '商务宴请（本地高端餐厅预订，陪席）',
+          '展厅讲解（产品介绍，商务洽谈）'
+        ] 
+      },
+      { 
+        title: '🏢 企业对接', 
+        items: [
+          '本地企业拜访（提前对接，安排行程）',
+          '政府关系协调（熟悉政策，对接部门）',
+          '投资考察陪同（工业园区，项目实地）',
+          '资源整合（引荐关键负责人）'
+        ] 
+      },
+      { 
+        title: '🌐 语言服务', 
+        items: [
+          '中英互译（商务谈判级）',
+          '中日互译（日本客户专业接待）',
+          '本地通（杭州历史，商业环境）',
+          '文档翻译（合同，报告，PPT）'
+        ] 
+      }
+    ],
+    resources: [
+      '杭州经开区招商局',
+      '阿里/网易/海康威视内部参观',
+      '本地上市公司高管饭局',
+      '西湖国宾馆/西子湖四季酒店预订',
+      '上海浦东/虹桥机场VIP通道',
+      '五大行（四大会计师事务所+麦肯锡）人脉'
+    ],
+    warning: '🛡️实名认证·背景调查·保密协议·商务保险' },
+  { id: 7, name: '阿妹', avatar: img('guide7', 100, 100), level: 'newcomer', rating: 4.6, orderCount: 12, tags: ['密室', '剧本杀', '组局'], priceHourly: 40, priceHalfDay: 180, priceFullDay: 300, bio: '密室老玩家，剧本杀组局达人，帮你凑人开本！', coverImage: img('guide7-cover', 800, 400), distance: '0.5km', isOnline: true, city: '杭州', works: [img('work7a', 200, 200), img('work7b', 200, 200), img('work7c', 200, 200), img('work7d', 200, 200)], 
+    
+    // 密室逃脱详细数据
+    category: 'escape',
+    location: '杭州·拱墅区·XX密室逃脱（地铁打铁关站）',
+    duration: '90分钟',
+    difficulty: 4,
+    groupSize: '4-8人',
+    horrorLevel: '中恐',
+    features: ['单人任务', '多重结局', '真人演绎', '机械解谜'],
+    pricePerPerson: 168,
+    certifications: ['密室高玩认证', '100+主题经验', '坦克担当'],
+    warning: '心脏病/高血压/幽闭恐惧症请勿参加，18岁以下需监护人陪同' },
+  { id: 8, name: '王哥', avatar: img('guide8', 100, 100), level: 'featured', rating: 4.9, orderCount: 312, tags: ['自驾', '露营', '户外'], priceHourly: 120, priceHalfDay: 500, priceFullDay: 800, bio: '房车旅行达人，走过318川藏线10次，露营老司机。', coverImage: img('guide8-cover', 800, 400), distance: '5.0km', isOnline: false, city: '成都', works: [img('work8a', 200, 200), img('work8b', 200, 200), img('work8c', 200, 200), img('work8d', 200, 200)],
+    
+    // 露营组队详细数据
+    category: 'camping',
+    location: '湖州·安吉·小杭坑生态营地（杭州自驾1.5h）',
+    duration: '4月20-21日（周六日）2天1夜',
+    difficulty: 2,
+    groupSize: '8人小团（4男4女，目前3人报名）',
+    features: ['星空摄影', '篝火晚会', '轻徒步', '荒野厨房'],
+    pricePerPerson: 399,
+    certifications: ['户外领队认证', '露营达人', '野外生存教练', '营地规划师', '登山协会认证', '无人机飞手'],
+    services: [
+      { title: '⛺ 装备提供', items: ['帐篷（双人帐+防潮垫+睡袋）', '炊具（卡式炉+气罐+锅具）', '桌椅（折叠桌+月亮椅）', '灯具（营地灯+头灯）'] },
+      { title: '🍖 餐食服务', items: ['烧烤晚餐（食材+调料）', '早餐（咖啡+面包+水果）', '饮用水（无限量）'] },
+      { title: '📸 摄影服务', items: ['无人机航拍（全程跟拍）', '星空摄影（银河延时）', '精修照片（每人50张+）'] },
+      { title: '🛡️ 安全保障', items: ['户外意外险（每人50万）', '急救包+卫星电话', '安全培训（搭帐篷+野外生存）'] },
+      { title: '🚗 交通服务', items: ['可拼车（油费AA）', '营地接送', '行李托运'] }
+    ],
+    schedule: [
+      { 
+        day: 1, 
+        items: [
+          { time: '14:00', activity: '营地集合，搭建帐篷教学' },
+          { time: '16:00', activity: '山野轻徒步，挖春笋' },
+          { time: '18:00', activity: '荒野厨房，自助烧烤' },
+          { time: '20:00', activity: '篝火晚会，星空摄影，狼人杀' },
+          { time: '22:00', activity: '入帐休息，观星' }
+        ]
+      },
+      { 
+        day: 2, 
+        items: [
+          { time: '06:00', activity: '日出云海（自愿）' },
+          { time: '08:00', activity: '晨间咖啡，早餐' },
+          { time: '10:00', activity: '溯溪玩水，收拾营地' },
+          { time: '12:00', activity: '返程' }
+        ]
+      }
+    ],
+    includes: ['⛺帐篷装备（双人帐+防潮垫+睡袋）', '🍖餐食（烧烤晚餐+早餐+咖啡）', '📸摄影（无人机航拍+星空摄影）', '🛡️保险（户外意外险）', '🚗交通（可拼车，油费AA）'],
+    equipment: {
+      provided: ['帐篷', '睡袋', '炊具', '桌椅', '灯具', '急救包'],
+      self: ['洗漱用品', '换洗衣物', '防晒霜', '充电宝', '个人药品']
+    },
+    warning: '户外活动存在风险，请听从领队安排，遵守无痕山林原则，不乱扔垃圾' },
 ];
 
 // 搭子数据
