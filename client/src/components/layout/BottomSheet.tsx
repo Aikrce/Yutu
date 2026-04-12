@@ -19,20 +19,26 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   const [visible, setVisible] = useState(false);
   const [animating, setAnimating] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (open) {
-      setVisible(true);
-      requestAnimationFrame(() => setAnimating(true));
+      // 使用 requestAnimationFrame 延迟 setState，避免 effect 内同步调用
+      requestAnimationFrame(() => {
+        setVisible(true);
+        requestAnimationFrame(() => setAnimating(true));
+      });
       document.body.style.overflow = 'hidden';
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 关闭动画由 open prop 驱动
       setAnimating(false);
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         setVisible(false);
         document.body.style.overflow = '';
       }, 400);
     }
     return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
       document.body.style.overflow = '';
     };
   }, [open]);

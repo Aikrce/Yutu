@@ -268,23 +268,4 @@ export function CloudLoading({ size = 36, className }: { size?: number; classNam
   );
 }
 
-// ==================== 四、图标索引 ====================
-export const CLOUD_ICONS = {
-  search: CloudSearch,
-  location: CloudLocation,
-  heart: CloudHeart,
-  star: CloudStar,
-  bell: CloudBell,
-  message: CloudMessage,
-  buddy: CloudBuddy,
-  check: CloudCheck,
-  publish: CloudPublish,
-  order: CloudOrder,
-  wallet: CloudWallet,
-  shield: CloudShield,
-  settings: CloudSettings,
-  share: CloudShare,
-  mascot: CloudMascot,
-  empty: CloudEmpty,
-  loading: CloudLoading,
-} as const;
+// ==================== 四、图标索引（移至 icons/index.ts） ====================

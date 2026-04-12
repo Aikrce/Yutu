@@ -9,7 +9,7 @@ export default function AppRouter() {
   return (
     <Routes>
       {/* 一级Tab页面 */}
-      <Route path="/*" element={<App />} />
+      <Route path="/" element={<App />} />
 
       {/* 二级页面 - 滑入覆盖 */}
       <Route path="/guide/:id" element={<GuideDetailPage />} />

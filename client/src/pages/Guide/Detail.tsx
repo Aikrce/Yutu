@@ -1,10 +1,11 @@
 // 向导详情页 /guide/:id
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useIdParam, SlideInPage } from '../../components/layout/SubNavBar';
+import { SlideInPage } from '../../components/layout/SubNavBar';
+import { useIdParam } from '../../utils/navigation';
 import { MOCK_GUIDES, MOCK_REVIEWS } from '../../data/mock';
 import { getGuideTheme } from './theme';
-import { DefaultDetail, EscapeRoomDetail, CampingDetail, BusinessDetail } from './DetailComponents';
+import { DefaultDetail, EscapeRoomDetail, CampingDetail, BusinessDetail, PhotographyDetail, FoodDetail, OutdoorDetail, HistoryDetail, ArtDetail } from './DetailComponents';
 
 export default function GuideDetailPage() {
   const [searchParams] = useSearchParams();
@@ -36,7 +37,22 @@ export default function GuideDetailPage() {
   if (guide.category === 'business') {
     return <BusinessDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
   }
+  if (guide.category === 'photography') {
+    return <PhotographyDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
+  }
+  if (guide.category === 'food') {
+    return <FoodDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
+  }
+  if (guide.category === 'outdoor') {
+    return <OutdoorDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
+  }
+  if (guide.category === 'history') {
+    return <HistoryDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
+  }
+  if (guide.category === 'art') {
+    return <ArtDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} />;
+  }
 
   // 默认通用布局
-  return <DefaultDetail guide={guide} theme={theme} backUrl={backUrl} reviews={reviews} prices={prices} priceType={priceType} setPriceType={setPriceType} showBooking={showBooking} setShowBooking={setShowBooking} bookDate={bookDate} setBookDate={setBookDate} bookTime={bookTime} setBookTime={setBookTime} />;
+  return <DefaultDetail guide={guide} backUrl={backUrl} reviews={reviews} prices={prices} priceType={priceType} setPriceType={setPriceType} showBooking={showBooking} setShowBooking={setShowBooking} bookDate={bookDate} setBookDate={setBookDate} bookTime={bookTime} setBookTime={setBookTime} />;
 }

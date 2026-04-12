@@ -1,20 +1,11 @@
 // 聊天详情页 /chat/:id
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SubNavBar, SlideInPage } from '../../components/layout/SubNavBar';
 import { CloudStar } from '../../components/icons/CloudIcons';
 import { Send, Image as ImageIcon, Camera } from 'lucide-react';
 import { MOCK_CHATS, MOCK_MESSAGES, MOCK_USERS } from '../../data/mock';
-
-interface Message {
-  id: number;
-  chatId: number;
-  senderId: number;
-  content: string;
-  type: 'text';
-  time: string;
-  isMe: boolean;
-}
+import type { ChatMessage } from '../../data/mock';
 
 export default function ChatDetailPage() {
   const { id } = useParams();
@@ -24,13 +15,10 @@ export default function ChatDetailPage() {
   const backUrl = searchParams.get('back') || '/';
   const chat = MOCK_CHATS.find(c => c.id === chatId);
   const [inputText, setInputText] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [sentMessages, setSentMessages] = useState<ChatMessage[]>([]);
+  const initialMessages = useMemo(() => MOCK_MESSAGES.filter(m => m.chatId === chatId), [chatId]);
+  const messages = useMemo(() => [...initialMessages, ...sentMessages], [initialMessages, sentMessages]);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const chatMessages = MOCK_MESSAGES.filter(m => m.chatId === chatId);
-    setMessages(chatMessages);
-  }, [chatId]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -45,8 +33,8 @@ export default function ChatDetailPage() {
 
   const handleSend = () => {
     if (!inputText.trim()) return;
-    const newMsg: Message = {
-      id: messages.length + 1,
+    const newMsg: ChatMessage = {
+      id: Math.max(0, ...messages.map(m => m.id)) + 1,
       chatId,
       senderId: 0,
       content: inputText,
@@ -54,7 +42,7 @@ export default function ChatDetailPage() {
       time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
       isMe: true,
     };
-    setMessages(prev => [...prev, newMsg]);
+    setSentMessages(prev => [...prev, newMsg]);
     setInputText('');
   };
 

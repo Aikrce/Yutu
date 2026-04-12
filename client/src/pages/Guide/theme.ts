@@ -112,6 +112,106 @@ export const businessTheme: GuideTheme = {
   name: 'business'
 };
 
+// 摄影向导主题（清新蓝白）
+export const photographyTheme: GuideTheme = {
+  primary: '#4A90E2',
+  primaryLight: '#4A90E220',
+  primaryDark: '#3A7BC8',
+  secondary: '#87CEEB',
+  bgPrimary: '#FFFFFF',
+  bgSecondary: '#F0F8FF',
+  bgCard: '#FFFFFF',
+  gradientHeader: 'linear-gradient(135deg, #4A90E2 0%, #87CEEB 100%)',
+  gradientButton: 'linear-gradient(135deg, #4A90E2 0%, #3A7BC8 100%)',
+  textOnPrimary: '#FFFFFF',
+  textPrimary: '#1A365D',
+  textSecondary: '#4A5568',
+  borderColor: '#E2E8F0',
+  shadow: '0 4px 12px rgba(74,144,226,0.3)',
+  icon: '📸',
+  name: 'photography'
+};
+
+// 美食向导主题（暖橙食欲）
+export const foodTheme: GuideTheme = {
+  primary: '#FF6B35',
+  primaryLight: '#FF6B3520',
+  primaryDark: '#E85A26',
+  secondary: '#FFA07A',
+  bgPrimary: '#FFFCF5',
+  bgSecondary: '#FFF8E7',
+  bgCard: '#FFFFFF',
+  gradientHeader: 'linear-gradient(135deg, #FF6B35 0%, #FFA07A 100%)',
+  gradientButton: 'linear-gradient(135deg, #FF6B35 0%, #E85A26 100%)',
+  textOnPrimary: '#FFFFFF',
+  textPrimary: '#7C2D12',
+  textSecondary: '#9A3412',
+  borderColor: '#FED7AA',
+  shadow: '0 4px 12px rgba(255,107,53,0.3)',
+  icon: '🍜',
+  name: 'food'
+};
+
+// 户外向导主题（山野绿）
+export const outdoorTheme: GuideTheme = {
+  primary: '#228B22',
+  primaryLight: '#228B2220',
+  primaryDark: '#1A6B1A',
+  secondary: '#696969',
+  bgPrimary: '#F5F5F5',
+  bgSecondary: '#FFFFFF',
+  bgCard: '#FFFFFF',
+  gradientHeader: 'linear-gradient(135deg, #228B22 0%, #2E8B57 100%)',
+  gradientButton: 'linear-gradient(135deg, #228B22 0%, #1A6B1A 100%)',
+  textOnPrimary: '#FFFFFF',
+  textPrimary: '#14532D',
+  textSecondary: '#166534',
+  borderColor: '#BBF7D0',
+  shadow: '0 4px 12px rgba(34,139,34,0.3)',
+  icon: '⛰️',
+  name: 'outdoor'
+};
+
+// 历史向导主题（古典红金）
+export const historyTheme: GuideTheme = {
+  primary: '#8B0000',
+  primaryLight: '#8B000020',
+  primaryDark: '#6B0000',
+  secondary: '#DAA520',
+  bgPrimary: '#FAF0E6',
+  bgSecondary: '#FFF8DC',
+  bgCard: '#FFFFFF',
+  gradientHeader: 'linear-gradient(135deg, #8B0000 0%, #A52A2A 100%)',
+  gradientButton: 'linear-gradient(135deg, #8B0000 0%, #6B0000 100%)',
+  textOnPrimary: '#FFD700',
+  textPrimary: '#450a0a',
+  textSecondary: '#7f1d1d',
+  borderColor: '#FECACA',
+  shadow: '0 4px 12px rgba(139,0,0,0.3)',
+  icon: '🏛️',
+  name: 'history'
+};
+
+// 文艺向导主题（治愈粉紫）
+export const artTheme: GuideTheme = {
+  primary: '#9370DB',
+  primaryLight: '#9370DB20',
+  primaryDark: '#7B5DB0',
+  secondary: '#FFB6C1',
+  bgPrimary: '#FFF0F5',
+  bgSecondary: '#FFFFFF',
+  bgCard: '#FFFFFF',
+  gradientHeader: 'linear-gradient(135deg, #9370DB 0%, #FFB6C1 100%)',
+  gradientButton: 'linear-gradient(135deg, #9370DB 0%, #7B5DB0 100%)',
+  textOnPrimary: '#FFFFFF',
+  textPrimary: '#581c87',
+  textSecondary: '#7c3aed',
+  borderColor: '#E9D5FF',
+  shadow: '0 4px 12px rgba(147,112,219,0.3)',
+  icon: '🎨',
+  name: 'art'
+};
+
 // 根据分类获取主题
 export function getGuideTheme(category?: string): GuideTheme {
   switch (category) {
@@ -121,6 +221,16 @@ export function getGuideTheme(category?: string): GuideTheme {
       return campingTheme;
     case 'business':
       return businessTheme;
+    case 'photography':
+      return photographyTheme;
+    case 'food':
+      return foodTheme;
+    case 'outdoor':
+      return outdoorTheme;
+    case 'history':
+      return historyTheme;
+    case 'art':
+      return artTheme;
     default:
       return defaultTheme;
   }

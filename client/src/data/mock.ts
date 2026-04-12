@@ -19,7 +19,7 @@ export interface Guide {
   works: string[];
   
   // 扩展字段 - 支持详细详情页
-  category?: 'scenic' | 'food' | 'outdoor' | 'culture' | 'art' | 'business' | 'escape' | 'camping'; // 分类
+  category?: 'scenic' | 'food' | 'outdoor' | 'culture' | 'art' | 'business' | 'escape' | 'camping' | 'photography' | 'history'; // 分类
   location?: string; // 具体地点
   duration?: string; // 时长
   difficulty?: number; // 难度 1-5
@@ -40,11 +40,120 @@ const img = (seed: string, w = 400, h = 300) =>
   `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
 export const MOCK_GUIDES: Guide[] = [
-  { id: 1, name: '小李', avatar: img('guide1', 100, 100), level: 'featured', rating: 4.9, orderCount: 128, tags: ['摄影', '讲解', '带娃'], priceHourly: 80, priceHalfDay: 350, priceFullDay: 600, bio: '杭州本地人，5年摄影爱好者，熟悉西湖周边所有拍照机位。帮你拍出朋友圈最靓的照片！', coverImage: img('guide1-cover', 800, 400), distance: '1.2km', isOnline: true, city: '杭州', works: [img('work1a', 200, 200), img('work1b', 200, 200), img('work1c', 200, 200), img('work1d', 200, 200)] },
-  { id: 2, name: '阿花', avatar: img('guide2', 100, 100), level: 'newcomer', rating: 4.8, orderCount: 32, tags: ['美食', '探店', '拍照'], priceHourly: 50, priceHalfDay: 200, priceFullDay: 380, bio: '成都土著，吃货本货，带你去本地人去的店，不是游客坑！', coverImage: img('guide2-cover', 800, 400), distance: '0.8km', isOnline: true, city: '成都', works: [img('work2a', 200, 200), img('work2b', 200, 200), img('work2c', 200, 200), img('work2d', 200, 200)] },
-  { id: 3, name: '大刘', avatar: img('guide3', 100, 100), level: 'featured', rating: 4.9, orderCount: 256, tags: ['徒步', '登山', '户外'], priceHourly: 100, priceHalfDay: 400, priceFullDay: 700, bio: '国家登山协会认证向导，10年户外经验，安全第一风景第二！', coverImage: img('guide3-cover', 800, 400), distance: '2.5km', isOnline: false, city: '张家界', works: [img('work3a', 200, 200), img('work3b', 200, 200), img('work3c', 200, 200), img('work3d', 200, 200)] },
-  { id: 4, name: '小周', avatar: img('guide4', 100, 100), level: 'featured', rating: 5.0, orderCount: 89, tags: ['历史', '讲解', '古建'], priceHourly: 90, priceHalfDay: 380, priceFullDay: 650, bio: '历史系研究生，专门研究明清建筑，故宫就是我家后花园。', coverImage: img('guide4-cover', 800, 400), distance: '3.1km', isOnline: true, city: '北京', works: [img('work4a', 200, 200), img('work4b', 200, 200), img('work4c', 200, 200), img('work4d', 200, 200)] },
-  { id: 5, name: '晓晓', avatar: img('guide5', 100, 100), level: 'newcomer', rating: 4.7, orderCount: 18, tags: ['文艺', '咖啡', '打卡'], priceHourly: 60, priceHalfDay: 250, priceFullDay: 450, bio: '厦门文艺女青年，知道所有隐藏咖啡馆和拍照圣地。', coverImage: img('guide5-cover', 800, 400), distance: '1.5km', isOnline: true, city: '厦门', works: [img('work5a', 200, 200), img('work5b', 200, 200), img('work5c', 200, 200), img('work5d', 200, 200)] },
+  { id: 1, name: '小李', avatar: img('guide1', 100, 100), level: 'featured', rating: 4.9, orderCount: 128, tags: ['摄影', '讲解', '带娃'], priceHourly: 80, priceHalfDay: 350, priceFullDay: 600, bio: '杭州本地人，5年摄影爱好者，熟悉西湖周边所有拍照机位。帮你拍出朋友圈最靓的照片！', coverImage: img('guide1-cover', 800, 400), distance: '1.2km', isOnline: true, city: '杭州', works: [img('work1a', 200, 200), img('work1b', 200, 200), img('work1c', 200, 200), img('work1d', 200, 200)],
+    
+    // 摄影向导详细数据
+    category: 'photography',
+    location: '杭州·西湖景区及周边',
+    duration: '2小时起',
+    difficulty: 1,
+    groupSize: '1-4人',
+    features: ['风光摄影', '人像写真', '日出日落', '亲子跟拍'],
+    pricePerPerson: 350,
+    certifications: ['视觉中国签约摄影师', '摄影比赛获奖', '美术院校毕业'],
+    services: [
+      { title: '📷 跟拍服务', items: ['西湖十景打卡（断桥、雷峰塔、苏堤、白堤）', '人像写真（个人/情侣/亲子/闺蜜）', '日出日落（最佳机位，黄金时刻）', '夜景人像（西湖音乐喷泉、城市夜景）'] },
+      { title: '🎨 后期服务', items: ['精修20张（调色+磨皮+液化）', '原片全送（200-500张）', '3天出片（加急24小时）'] }
+    ],
+    equipment: {
+      provided: ['索尼A7M4', '24-70GM镜头', '85GM镜头', '无人机'],
+      self: ['建议穿浅色衣服', '可自带化妆品', '舒适的鞋子']
+    },
+    warning: '📋 建议提前沟通拍摄风格，雨天可改期或转室内' },
+  { id: 2, name: '阿花', avatar: img('guide2', 100, 100), level: 'newcomer', rating: 4.8, orderCount: 32, tags: ['美食', '探店', '拍照'], priceHourly: 50, priceHalfDay: 200, priceFullDay: 380, bio: '成都土著，吃货本货，带你去本地人去的店，不是游客坑！', coverImage: img('guide2-cover', 800, 400), distance: '0.8km', isOnline: true, city: '成都', works: [img('work2a', 200, 200), img('work2b', 200, 200), img('work2c', 200, 200), img('work2d', 200, 200)],
+    
+    // 美食向导详细数据
+    category: 'food',
+    location: '成都·建设路/春熙路/宽窄巷子/锦里',
+    duration: '4小时吃遍',
+    difficulty: 1,
+    groupSize: '2-6人',
+    features: ['串串', '火锅', '面食', '甜品'],
+    pricePerPerson: 200,
+    certifications: ['大众点评V8', '吃辣王者', '美食博主'],
+    schedule: [
+      { day: 1, items: [
+        { time: '14:00', activity: '建设巷：周签签锅巴土豆（外酥里嫩）' },
+        { time: '14:30', activity: '建设巷：傅记排骨（香辣入味）' },
+        { time: '16:00', activity: '春熙路：龙抄手（老字号）' },
+        { time: '16:30', activity: '春熙路：夫妻肺片（正宗味道）' },
+        { time: '18:00', activity: '宽窄巷子：串串香（数签签）' },
+        { time: '19:00', activity: '宽窄巷子：火锅（九宫格）' },
+        { time: '20:30', activity: '锦里：三大炮（传统小吃）' },
+        { time: '21:00', activity: '锦里：冰粉（解辣神器）' }
+      ]}
+    ],
+    includes: ['🍢 正餐（串串/火锅/冒菜，3选2）', '🍜 小吃（锅巴土豆/抄手/肺片，全含）', '🍧 甜品（冰粉/蛋烘糕/糖油果子）', '🥤 饮料（唯怡豆奶/酸梅汤无限续）'],
+    warning: '🌶️ 默认微辣，可调整辣度，肠胃药自备' },
+  { id: 3, name: '大刘', avatar: img('guide3', 100, 100), level: 'featured', rating: 4.9, orderCount: 256, tags: ['徒步', '登山', '户外'], priceHourly: 100, priceHalfDay: 400, priceFullDay: 700, bio: '国家登山协会认证向导，10年户外经验，安全第一风景第二！', coverImage: img('guide3-cover', 800, 400), distance: '2.5km', isOnline: false, city: '张家界', works: [img('work3a', 200, 200), img('work3b', 200, 200), img('work3c', 200, 200), img('work3d', 200, 200)],
+    
+    // 户外向导详细数据
+    category: 'outdoor',
+    location: '张家界·天门山/黄石寨/袁家界',
+    duration: '1-3天可选',
+    difficulty: 3,
+    groupSize: '4-12人',
+    features: ['登山', '攀岩', '露营', '风光'],
+    pricePerPerson: 400,
+    certifications: ['国家登山协会认证', '红十字会急救员', '定向越野教练'],
+    schedule: [
+      { day: 1, items: [
+        { time: '08:00', activity: '集合出发，装备检查' },
+        { time: '09:30', activity: '索道上山，开始徒步' },
+        { time: '12:00', activity: '山顶午餐（自备）' },
+        { time: '14:00', activity: '玻璃栈道体验' },
+        { time: '16:00', activity: '天门洞打卡' },
+        { time: '18:00', activity: '安全下山' }
+      ]}
+    ],
+    equipment: {
+      provided: ['登山杖', '头灯', '急救包', '雨衣'],
+      self: ['登山鞋', '冲锋衣', '水壶', '零食']
+    },
+    includes: ['🛡️ 专业装备（登山杖、头灯、急救包）', '📡 通讯设备（卫星电话、GPS定位）', '🏥 户外保险（50万保额）', '🏃 应急能力（红十字会急救员）'],
+    warning: '⚠️ 心脏病/高血压禁止参加，听从指挥，不擅自离队' },
+  { id: 4, name: '小周', avatar: img('guide4', 100, 100), level: 'featured', rating: 5.0, orderCount: 89, tags: ['历史', '讲解', '古建'], priceHourly: 90, priceHalfDay: 380, priceFullDay: 650, bio: '历史系研究生，专门研究明清建筑，故宫就是我家后花园。', coverImage: img('guide4-cover', 800, 400), distance: '3.1km', isOnline: true, city: '北京', works: [img('work4a', 200, 200), img('work4b', 200, 200), img('work4c', 200, 200), img('work4d', 200, 200)],
+    
+    // 历史向导详细数据
+    category: 'history',
+    location: '北京·故宫博物院',
+    duration: '3-6小时',
+    difficulty: 1,
+    groupSize: '1-8人',
+    features: ['明清历史', '古建艺术', '宫廷文化', '文物故事'],
+    pricePerPerson: 380,
+    certifications: ['故宫志愿讲解员', '历史学会会员', '北大历史系'],
+    services: [
+      { title: '📜 中轴线精华（3小时）', items: ['午门：推出午门斩首？都是误会！', '太和殿：皇帝登基的讲究', '乾清宫：正大光明匾后的秘密', '御花园：皇家园林的精巧'] },
+      { title: '🏗️ 古建艺术', items: ['斗拱结构：不用钉子的智慧', '琉璃瓦：颜色代表等级', '榫卯工艺：千年不倒的秘密'] },
+      { title: '👑 宫廷秘闻', items: ['皇帝的一天怎么过？', '后宫真的勾心斗角吗？', '太监宫女的真实生活'] }
+    ],
+    resources: ['清明上河图：张择端的密码', '千里江山图：18岁少年的绝唱', '各种釉彩大瓶：乾隆的审美'],
+    warning: '📋 需提前预约门票，建议穿舒适鞋子，可自带小本子记录' },
+  { id: 5, name: '晓晓', avatar: img('guide5', 100, 100), level: 'newcomer', rating: 4.7, orderCount: 18, tags: ['文艺', '咖啡', '打卡'], priceHourly: 60, priceHalfDay: 250, priceFullDay: 450, bio: '厦门文艺女青年，知道所有隐藏咖啡馆和拍照圣地。', coverImage: img('guide5-cover', 800, 400), distance: '1.5km', isOnline: true, city: '厦门', works: [img('work5a', 200, 200), img('work5b', 200, 200), img('work5c', 200, 200), img('work5d', 200, 200)],
+    
+    // 文艺向导详细数据
+    category: 'art',
+    location: '厦门·沙坡尾/鼓浪屿/曾厝垵/环岛路',
+    duration: '文艺一日游',
+    difficulty: 1,
+    groupSize: '1-4人',
+    features: ['咖啡', '书店', '花店', '拍照'],
+    pricePerPerson: 250,
+    certifications: ['咖啡师证', '人像摄影师', '手作达人'],
+    schedule: [
+      { day: 1, items: [
+        { time: '10:00', activity: '沙坡尾：oneday cafe（海景咖啡）' },
+        { time: '11:00', activity: '沙坡尾：不辍旧物馆（复古杂货）' },
+        { time: '13:00', activity: '鼓浪屿：乘船登岛' },
+        { time: '14:00', activity: '鼓浪屿：褚家园咖啡（老别墅）' },
+        { time: '15:00', activity: '鼓浪屿：赵小姐的店（伴手礼）' },
+        { time: '17:00', activity: '曾厝垵：从聿书店（独立书店）' },
+        { time: '18:00', activity: '环岛路：海边日落（最佳机位）' }
+      ]}
+    ],
+    includes: ['☕ 咖啡体验（手冲/拉花体验一次）', '📸 拍照服务（精修9张，原片全送）', '🎨 手作体验（陶艺/油画/香薰蜡烛）', '🎁 伴手礼（特色小店折扣）'],
+    warning: '💝 建议穿浅色衣服，可带小本子盖章，慢下来享受' },
   { id: 6, name: '老张', avatar: img('guide6', 100, 100), level: 'featured', rating: 4.8, orderCount: 198, tags: ['商务', '翻译', '英语'], priceHourly: 150, priceHalfDay: 600, priceFullDay: 1000, bio: '前外企高管，英语商务陪同，擅长企业对接和展会翻译。', coverImage: img('guide6-cover', 800, 400), distance: '4.2km', isOnline: true, city: '上海', works: [img('work6a', 200, 200), img('work6b', 200, 200), img('work6c', 200, 200), img('work6d', 200, 200)],
     
     // 商务陪同详细数据

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar } from '../../components/common/Avatar';
+import { Input } from '../../components/common/Input';
 import { CloudBell, CloudSearch } from '../../components/icons/CloudIcons';
 import { ContentCard } from '../../components/business/ContentCard';
 import { MOCK_CONTENTS } from '../../data/contents';
@@ -12,6 +13,11 @@ export function HomePage() {
   const navigate = useNavigate();
   const [category, setCategory] = useState('all');
   const [displayCount, setDisplayCount] = useState(WATERFALL_CONFIG.initialCount);
+
+  const handleCategoryChange = (key: string) => {
+    setCategory(key);
+    setDisplayCount(WATERFALL_CONFIG.initialCount);
+  };
 
   const filteredContents = category === 'all'
     ? MOCK_CONTENTS
@@ -27,7 +33,6 @@ export function HomePage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [filteredContents.length]);
 
-  useEffect(() => { setDisplayCount(WATERFALL_CONFIG.initialCount); }, [category]);
 
   const visibleContents = filteredContents.slice(0, displayCount);
   const leftCol = visibleContents.filter((_, i) => i % 2 === 0);
@@ -52,14 +57,11 @@ export function HomePage() {
               <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate('/user/1')} />
             </div>
           </div>
-          <div className="flex items-center bg-background rounded-lg px-3 py-2 gap-2">
-            <CloudSearch size={18} />
-            <span className="text-text-tertiary text-[14px]">搜索目的地、景点、美食...</span>
-          </div>
+          <Input prefix={<CloudSearch size={18} />} placeholder="搜索目的地、景点、美食..." inputSize="sm" className="bg-background" />
         </div>
         <div className="flex gap-1.5 px-4 py-2.5 overflow-x-auto scrollbar-hide">
           {CATEGORIES.map(cat => (
-            <button key={cat.key} onClick={() => setCategory(cat.key)}
+            <button key={cat.key} onClick={() => handleCategoryChange(cat.key)}
               className={`shrink-0 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-fast
                 ${category === cat.key ? 'bg-primary text-white shadow-sm' : 'bg-background text-text-secondary active:bg-gray-100'}`}>
               {cat.label}
