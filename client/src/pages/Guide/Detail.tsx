@@ -1,6 +1,6 @@
 // 向导详情页 /guide/:id
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SubNavBar, useIdParam, SlideInPage } from '../../components/layout/SubNavBar';
 import { CloudStar, CloudMessage } from '../../components/icons/CloudIcons';
 import { Avatar } from '../../components/common/Avatar';
@@ -8,8 +8,10 @@ import { MOCK_GUIDES, MOCK_REVIEWS, MOCK_USERS } from '../../data/mock';
 
 export default function GuideDetailPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const id = useIdParam();
   const guide = MOCK_GUIDES.find(g => g.id === id);
+  const backUrl = searchParams.get('back') || '/';
   const [priceType, setPriceType] = useState<'hourly' | 'halfDay' | 'fullDay'>('hourly');
   const [showBooking, setShowBooking] = useState(false);
   const [bookDate, setBookDate] = useState('今天');
@@ -114,7 +116,7 @@ export default function GuideDetailPage() {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-divider px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2`)} className="flex-1 py-2.5 bg-primary/10 text-primary text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70">
+        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-primary/10 text-primary text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70">
           <CloudMessage size={18} /> 聊一聊
         </button>
         <button onClick={() => setShowBooking(true)} className="flex-[1.5] py-2.5 bg-primary text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"

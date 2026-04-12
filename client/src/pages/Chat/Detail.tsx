@@ -1,6 +1,6 @@
 // 聊天详情页 /chat/:id
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { SubNavBar, SlideInPage } from '../../components/layout/SubNavBar';
 import { CloudStar } from '../../components/icons/CloudIcons';
 import { Send, Image as ImageIcon, Camera } from 'lucide-react';
@@ -18,8 +18,10 @@ interface Message {
 
 export default function ChatDetailPage() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const chatId = Number(id) || 0;
+  const backUrl = searchParams.get('back') || '/';
   const chat = MOCK_CHATS.find(c => c.id === chatId);
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -74,7 +76,7 @@ export default function ChatDetailPage() {
         {/* 对方信息卡 */}
         {isGuide && (
           <div className="flex items-center gap-2 bg-primary/5 rounded-xl p-3 mb-4"
-            onClick={() => otherUser && navigate(`/user/${otherUser.id}`)}>
+            onClick={() => otherUser && navigate(`/user/${otherUser.id}?back=${encodeURIComponent(backUrl)}`)}>
             <img src={chat.avatar} alt={chat.name} className="w-10 h-10 rounded-full object-cover" />
             <div className="flex-1">
               <div className="flex items-center gap-1.5">
@@ -106,7 +108,7 @@ export default function ChatDetailPage() {
               /* 对方消息 - 左侧白色气泡 */
               <div className="flex gap-2">
                 <img src={chat.avatar} alt={chat.name} className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
-                  onClick={() => otherUser && navigate(`/user/${otherUser.id}`)} />
+                  onClick={() => otherUser && navigate(`/user/${otherUser.id}?back=${encodeURIComponent(backUrl)}`)} />
                 <div className="max-w-[70%] bg-white px-3 py-2 rounded-2xl rounded-bl-md text-[14px] leading-relaxed text-text-primary shadow-sm border border-gray-50">
                   {msg.content}
                 </div>

@@ -51,7 +51,7 @@ export default function UserProfilePage() {
         <div className="flex items-center gap-2 mb-1">
           <h2 className="text-[18px] font-bold text-text-primary">{user.name}</h2>
           {user.isGuide && (
-            <button onClick={() => navigate(`/guide/${user.guideId}`)} className="text-[11px] bg-accent/10 text-accent px-2 py-0.5 rounded-full flex items-center gap-0.5">
+            <button onClick={() => navigate(`/guide/${user.guideId}?back=/user/${userId}`)} className="text-[11px] bg-accent/10 text-accent px-2 py-0.5 rounded-full flex items-center gap-0.5">
               <CloudStar size={11} /> 查看向导页
             </button>
           )}
@@ -87,7 +87,7 @@ export default function UserProfilePage() {
             <div className="flex gap-2.5">
               <div className="flex-1 flex flex-col gap-2.5">
                 {userContents.filter((_, i) => i % 2 === 0).map(item => (
-                  <div key={item.id} onClick={() => navigate(`/content/${item.id}`)}
+                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=/user/${userId}`)}
                     className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast">
                     <img src={item.image} alt={item.title} className="w-full object-cover bg-gray-100" style={{ height: 120 + (item.id % 3) * 40 }} loading="lazy" />
                     <div className="p-2.5">
@@ -102,7 +102,7 @@ export default function UserProfilePage() {
               </div>
               <div className="flex-1 flex flex-col gap-2.5">
                 {userContents.filter((_, i) => i % 2 === 1).map(item => (
-                  <div key={item.id} onClick={() => navigate(`/content/${item.id}`)}
+                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=/user/${userId}`)}
                     className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast">
                     <img src={item.image} alt={item.title} className="w-full object-cover bg-gray-100" style={{ height: 120 + (item.id % 3) * 40 }} loading="lazy" />
                     <div className="p-2.5">

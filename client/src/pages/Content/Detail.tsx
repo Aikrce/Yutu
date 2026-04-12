@@ -57,7 +57,7 @@ export default function ContentDetailPage() {
 
       {/* 作者行 */}
       <div className="px-4 py-3 flex items-center justify-between border-b border-divider"
-        onClick={() => author && navigate(`/user/${author.id}`)}>
+        onClick={() => author && navigate(`/user/${author.id}?back=/content/${contentId}`)}>
         <div className="flex items-center gap-2.5 cursor-pointer">
           <Avatar name={content.userName} size="sm" />
           <div>
@@ -81,7 +81,7 @@ export default function ContentDetailPage() {
           <h3 className="text-[15px] font-semibold text-text-primary mb-2">周边向导推荐</h3>
           {nearbyGuides.map(guide => (
             <div key={guide.id} className="flex items-center gap-3 py-2"
-              onClick={() => navigate(`/guide/${guide.id}`)}>
+              onClick={() => navigate(`/guide/${guide.id}?back=/content/${contentId}`)}>
               <img src={guide.avatar} alt={guide.name} className="w-10 h-10 rounded-full object-cover" loading="lazy" />
               <div className="flex-1">
                 <div className="flex items-center gap-1.5">
@@ -132,10 +132,10 @@ export default function ContentDetailPage() {
         </div>
         {content.hasCompanion && (
           <div className="flex gap-2">
-            <button onClick={() => navigate(`/user/1`)} className="flex-1 py-2 bg-success/10 text-success text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
+            <button onClick={() => navigate(`/user/1?back=/content/${contentId}`)} className="flex-1 py-2 bg-success/10 text-success text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
               <CloudBuddy size={14} /> 求搭子
             </button>
-            <button onClick={() => navigate(`/guide/1`)} className="flex-1 py-2 bg-primary/10 text-primary text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
+            <button onClick={() => navigate(`/guide/1?back=/content/${contentId}`)} className="flex-1 py-2 bg-primary/10 text-primary text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
               <CloudStar size={14} /> 找向导
             </button>
           </div>

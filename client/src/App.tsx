@@ -93,7 +93,7 @@ function HomePage() {
             </div>
             <div className="flex items-center gap-3">
               <CloudBell size={20} />
-              <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate('/user/1')} />
+              <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate('/user/1?back=/')} />
             </div>
           </div>
           <div className="flex items-center bg-background rounded-lg px-3 py-2 gap-2">
@@ -121,10 +121,10 @@ function HomePage() {
       <div className="px-2.5">
         <div className="flex gap-2.5">
           <div className="flex-1 flex flex-col gap-2.5">
-            {leftCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
+            {leftCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}?back=/`)} />)}
           </div>
           <div className="flex-1 flex flex-col gap-2.5">
-            {rightCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
+            {rightCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}?back=/`)} />)}
           </div>
         </div>
       </div>
@@ -157,7 +157,7 @@ function ContentCard({ item, onClick }: { item: ContentItem; onClick?: () => voi
         {item.hasCompanion && (
           <div className="flex gap-1.5 mb-2">
             <button className="flex-1 bg-success/10 text-success text-[11px] font-medium py-1 rounded-full active:opacity-70">求搭子</button>
-            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/1`); }}>找向导</button>
+            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/1?back=/`); }}>找向导</button>
           </div>
         )}
         <div className="flex items-center justify-between">
@@ -209,7 +209,7 @@ function ExplorePage() {
 
       {activeTab === 'buddy' ? (
         <div className="px-4 space-y-3">
-          {MOCK_BUDDIES.map(buddy => <BuddyCard key={buddy.id} buddy={buddy} onNavigate={navigate} />)}
+          {MOCK_BUDDIES.map(buddy => <BuddyCard key={buddy.id} buddy={buddy} onNavigate={navigate} backUrl="/explore" />)}
         </div>
       ) : (
         <div>
@@ -223,7 +223,7 @@ function ExplorePage() {
             ))}
           </div>
           <div className="px-4 space-y-3 mt-2">
-            {filteredGuides.map(guide => <GuideCard key={guide.id} guide={guide} onNavigate={navigate} />)}
+            {filteredGuides.map(guide => <GuideCard key={guide.id} guide={guide} onNavigate={navigate} backUrl="/explore" />)}
           </div>
         </div>
       )}
@@ -231,7 +231,7 @@ function ExplorePage() {
   );
 }
 
-function BuddyCard({ buddy, onNavigate }: { buddy: Buddy; onNavigate: ReturnType<typeof useNavigate> }) {
+function BuddyCard({ buddy, onNavigate, backUrl }: { buddy: Buddy; onNavigate: ReturnType<typeof useNavigate>; backUrl?: string }) {
   return (
     <div className="bg-card rounded-md p-3 shadow-card touch-feedback">
       <div className="flex gap-3">
@@ -260,15 +260,15 @@ function BuddyCard({ buddy, onNavigate }: { buddy: Buddy; onNavigate: ReturnType
       </div>
       <div className="flex gap-2 mt-3 pt-2 border-t border-divider">
         <button className="flex-1 py-1.5 text-[13px] font-medium text-primary bg-primary/10 rounded-full active:opacity-70">打招呼</button>
-        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70" onClick={() => onNavigate(`/user/${buddy.id + 6}`)}>一起玩</button>
+        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70" onClick={() => onNavigate(`/user/${buddy.id + 6}?back=${backUrl || '/'}`)}>一起玩</button>
       </div>
     </div>
   );
 }
 
-function GuideCard({ guide, onNavigate }: { guide: Guide; onNavigate: ReturnType<typeof useNavigate> }) {
+function GuideCard({ guide, onNavigate, backUrl }: { guide: Guide; onNavigate: ReturnType<typeof useNavigate>; backUrl?: string }) {
   return (
-    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback" onClick={() => onNavigate(`/guide/${guide.id}`)}>
+    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback" onClick={() => onNavigate(`/guide/${guide.id}?back=${backUrl || '/'}`)}>
       <div className="relative h-28">
         <img src={guide.coverImage} alt={guide.name} className="w-full h-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -302,7 +302,7 @@ function GuideCard({ guide, onNavigate }: { guide: Guide; onNavigate: ReturnType
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[16px] font-bold text-accent">¥{guide.priceHourly}<span className="text-[11px] font-normal text-text-tertiary">/小时</span></span>
-          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); onNavigate(`/guide/${guide.id}`); }}>立即预约</button>
+          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); onNavigate(`/guide/${guide.id}?back=${backUrl || '/'}`); }}>立即预约</button>
         </div>
       </div>
     </div>
@@ -324,7 +324,7 @@ function ChatPage() {
       <div className="px-4">
         {MOCK_CHATS.map(chat => (
           <div key={chat.id} className="flex items-center gap-3 py-3 border-b border-divider touch-feedback"
-            onClick={() => chat.type === 'user' && navigate(`/chat/${chat.id}`)}>
+            onClick={() => chat.type === 'user' && navigate(`/chat/${chat.id}?back=/chat`)}>
             {chat.type === 'system' ? (
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                 <CloudBell size={20} />
@@ -372,7 +372,7 @@ function ProfilePage() {
     <div style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}>
       <div className="bg-primary px-4 py-6 rounded-b-2xl">
         <div className="flex items-center gap-3">
-          <Avatar name="旅小友" size="xl" onlineStatus="online" onClick={() => navigate('/user/1')} />
+          <Avatar name="旅小友" size="xl" onlineStatus="online" onClick={() => navigate('/user/1?back=/profile')} />
           <div>
             <h2 className="text-[18px] font-bold text-white">旅小友</h2>
             <p className="text-[13px] text-primary-100">ID: 10086 · 杭州</p>
