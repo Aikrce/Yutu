@@ -190,3 +190,13 @@ button {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+/* 开屏页进度条动画 */
+@keyframes loadingBar {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.animate-loading-bar {
+  animation: loadingBar 2s ease-in-out forwards;
+}

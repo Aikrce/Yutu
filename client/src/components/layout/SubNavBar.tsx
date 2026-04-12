@@ -30,9 +30,9 @@ export function useIdParam(): number {
 }
 
 // 页面滑入动画包裹
-export function SlideInPage({ children }: { children: React.ReactNode }) {
+export function SlideInPage({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
-    <div className="fixed inset-0 z-[60] bg-background animate-slide-in" style={{ maxWidth: '430px', margin: '0 auto' }}>
+    <div className="fixed inset-0 z-[60] bg-background animate-slide-in" style={{ maxWidth: '430px', margin: '0 auto', ...style }}>
       {children}
     </div>
   );

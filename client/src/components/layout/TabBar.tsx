@@ -1,6 +1,8 @@
+// 底部Tab栏 - 统一版本
 import React from 'react';
-import { cn } from '../../utils/cn';
 import { Home, Compass, PlusCircle, MessageCircle, User } from 'lucide-react';
+import { Z_INDEX } from '../../data/constants';
+import { safeAreaBottom } from '../../utils/safeArea';
 
 interface TabBarProps {
   activeTab: string;
@@ -23,14 +25,10 @@ export const TabBar: React.FC<TabBarProps> = ({
 }) => {
   return (
     <div
-      className={cn(
-        'fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50',
-        'bg-white/95 backdrop-blur-md border-t border-divider',
-        className
-      )}
-      style={{ paddingBottom: 'var(--safe-bottom)' }}
+      className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-divider ${className || ''}`}
+      style={{ zIndex: Z_INDEX.tabBar, ...safeAreaBottom() }}
     >
-      <div className="flex items-center justify-around h-14">
+      <div className="flex items-center justify-around h-12">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           const Icon = tab.icon;
@@ -42,8 +40,8 @@ export const TabBar: React.FC<TabBarProps> = ({
                 onClick={() => onTabChange(tab.key)}
                 className="touch-feedback relative -top-3"
               >
-                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
-                  <Icon size={24} className="text-white" />
+                <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center shadow-lg" style={{ boxShadow: '0 4px 12px rgba(59,130,246,0.4)' }}>
+                  <Icon size={22} className="text-white" />
                 </div>
               </button>
             );
@@ -53,13 +51,10 @@ export const TabBar: React.FC<TabBarProps> = ({
             <button
               key={tab.key}
               onClick={() => onTabChange(tab.key)}
-              className={cn(
-                'touch-feedback flex flex-col items-center justify-center gap-0.5 min-w-[48px]',
-                isActive ? 'text-primary' : 'text-text-tertiary'
-              )}
+              className={`touch-feedback flex flex-col items-center justify-center gap-0.5 min-w-[44px] ${isActive ? 'text-primary' : 'text-text-tertiary'}`}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
-              <span className="text-tag">{tab.label}</span>
+              <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} />
+              <span className="text-[10px]">{tab.label}</span>
             </button>
           );
         })}
