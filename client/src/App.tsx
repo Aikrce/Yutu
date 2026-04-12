@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar } from './components/common/Avatar';
 import {
   CloudSearch, CloudLocation, CloudHeart, CloudStar, CloudBell,
@@ -52,6 +53,7 @@ function SplashPage({ onFinish }: { onFinish: () => void }) {
 
 // ==================== 瀑布流首页 ====================
 function HomePage() {
+  const navigate = useNavigate();
   const [category, setCategory] = useState('all');
   const [displayCount, setDisplayCount] = useState(20);
 
@@ -91,7 +93,7 @@ function HomePage() {
             </div>
             <div className="flex items-center gap-3">
               <CloudBell size={20} />
-              <Avatar name="旅小友" size="sm" onlineStatus="online" />
+              <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate('/user/1')} />
             </div>
           </div>
           <div className="flex items-center bg-background rounded-lg px-3 py-2 gap-2">
@@ -119,10 +121,10 @@ function HomePage() {
       <div className="px-2.5">
         <div className="flex gap-2.5">
           <div className="flex-1 flex flex-col gap-2.5">
-            {leftCol.map(item => <ContentCard key={item.id} item={item} />)}
+            {leftCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
           </div>
           <div className="flex-1 flex flex-col gap-2.5">
-            {rightCol.map(item => <ContentCard key={item.id} item={item} />)}
+            {rightCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
           </div>
         </div>
       </div>
@@ -135,10 +137,11 @@ function HomePage() {
 }
 
 // ==================== 内容卡片 ====================
-function ContentCard({ item }: { item: ContentItem }) {
+function ContentCard({ item, onClick }: { item: ContentItem; onClick?: () => void }) {
+  const navigate = useNavigate();
   const categoryLabel = CATEGORIES.find(c => c.key === item.category)?.label || '';
   return (
-    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast">
+    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast" onClick={onClick}>
       <div className="relative">
         <img src={item.image} alt={item.title} className="w-full object-cover bg-gray-100"
           style={{ height: 120 + (item.id % 3) * 40 }} loading="lazy" />
@@ -154,7 +157,7 @@ function ContentCard({ item }: { item: ContentItem }) {
         {item.hasCompanion && (
           <div className="flex gap-1.5 mb-2">
             <button className="flex-1 bg-success/10 text-success text-[11px] font-medium py-1 rounded-full active:opacity-70">求搭子</button>
-            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full active:opacity-70">找向导</button>
+            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/1`); }}>找向导</button>
           </div>
         )}
         <div className="flex items-center justify-between">
@@ -174,6 +177,7 @@ function ContentCard({ item }: { item: ContentItem }) {
 
 // ==================== 发现页 ====================
 function ExplorePage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'buddy' | 'guide'>('buddy');
   const [guideFilter, setGuideFilter] = useState('全部');
 
@@ -205,7 +209,7 @@ function ExplorePage() {
 
       {activeTab === 'buddy' ? (
         <div className="px-4 space-y-3">
-          {MOCK_BUDDIES.map(buddy => <BuddyCard key={buddy.id} buddy={buddy} />)}
+          {MOCK_BUDDIES.map(buddy => <BuddyCard key={buddy.id} buddy={buddy} onNavigate={navigate} />)}
         </div>
       ) : (
         <div>
@@ -219,7 +223,7 @@ function ExplorePage() {
             ))}
           </div>
           <div className="px-4 space-y-3 mt-2">
-            {filteredGuides.map(guide => <GuideCard key={guide.id} guide={guide} />)}
+            {filteredGuides.map(guide => <GuideCard key={guide.id} guide={guide} onNavigate={navigate} />)}
           </div>
         </div>
       )}
@@ -227,7 +231,7 @@ function ExplorePage() {
   );
 }
 
-function BuddyCard({ buddy }: { buddy: Buddy }) {
+function BuddyCard({ buddy, onNavigate }: { buddy: Buddy; onNavigate: ReturnType<typeof useNavigate> }) {
   return (
     <div className="bg-card rounded-md p-3 shadow-card touch-feedback">
       <div className="flex gap-3">
@@ -256,15 +260,15 @@ function BuddyCard({ buddy }: { buddy: Buddy }) {
       </div>
       <div className="flex gap-2 mt-3 pt-2 border-t border-divider">
         <button className="flex-1 py-1.5 text-[13px] font-medium text-primary bg-primary/10 rounded-full active:opacity-70">打招呼</button>
-        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70">一起玩</button>
+        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70" onClick={() => onNavigate(`/user/${buddy.id + 6}`)}>一起玩</button>
       </div>
     </div>
   );
 }
 
-function GuideCard({ guide }: { guide: Guide }) {
+function GuideCard({ guide, onNavigate }: { guide: Guide; onNavigate: ReturnType<typeof useNavigate> }) {
   return (
-    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback">
+    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback" onClick={() => onNavigate(`/guide/${guide.id}`)}>
       <div className="relative h-28">
         <img src={guide.coverImage} alt={guide.name} className="w-full h-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -298,7 +302,7 @@ function GuideCard({ guide }: { guide: Guide }) {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[16px] font-bold text-accent">¥{guide.priceHourly}<span className="text-[11px] font-normal text-text-tertiary">/小时</span></span>
-          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70">立即预约</button>
+          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); onNavigate(`/guide/${guide.id}`); }}>立即预约</button>
         </div>
       </div>
     </div>
@@ -307,6 +311,7 @@ function GuideCard({ guide }: { guide: Guide }) {
 
 // ==================== 消息页 ====================
 function ChatPage() {
+  const navigate = useNavigate();
   return (
     <div style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}>
       <div className="px-4 pt-2 pb-2">
@@ -318,7 +323,8 @@ function ChatPage() {
       </div>
       <div className="px-4">
         {MOCK_CHATS.map(chat => (
-          <div key={chat.id} className="flex items-center gap-3 py-3 border-b border-divider touch-feedback">
+          <div key={chat.id} className="flex items-center gap-3 py-3 border-b border-divider touch-feedback"
+            onClick={() => chat.type === 'user' && navigate(`/chat/${chat.id}`)}>
             {chat.type === 'system' ? (
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                 <CloudBell size={20} />
@@ -352,6 +358,7 @@ function ChatPage() {
 
 // ==================== 我的页 ====================
 function ProfilePage() {
+  const navigate = useNavigate();
   const [showOrders, setShowOrders] = useState(false);
   const statusMap: Record<string, { label: string; color: string }> = {
     pending: { label: '待支付', color: 'text-warning' },
@@ -365,7 +372,7 @@ function ProfilePage() {
     <div style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}>
       <div className="bg-primary px-4 py-6 rounded-b-2xl">
         <div className="flex items-center gap-3">
-          <Avatar name="旅小友" size="xl" onlineStatus="online" />
+          <Avatar name="旅小友" size="xl" onlineStatus="online" onClick={() => navigate('/user/1')} />
           <div>
             <h2 className="text-[18px] font-bold text-white">旅小友</h2>
             <p className="text-[13px] text-primary-100">ID: 10086 · 杭州</p>
