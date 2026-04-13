@@ -8,12 +8,21 @@ import { ProfilePage } from './pages/Profile/Index';
 import { PublishPage } from './pages/Publish/Index';
 import { TabBar } from './components/layout/TabBar';
 
+// 同一会话只显示一次开屏动画
+const SPLASH_SHOWN_KEY = 'yutu_splash_shown';
+function getInitialSplashState(): boolean {
+  return !sessionStorage.getItem(SPLASH_SHOWN_KEY);
+}
+
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(getInitialSplashState);
   const [activeTab, setActiveTab] = useState('home');
   const [showPublish, setShowPublish] = useState(false);
 
-  const handleSplashFinish = useCallback(() => setShowSplash(false), []);
+  const handleSplashFinish = useCallback(() => {
+    sessionStorage.setItem(SPLASH_SHOWN_KEY, '1');
+    setShowSplash(false);
+  }, []);
   const handleTabChange = useCallback((tab: string) => {
     if (tab === 'publish') {
       setShowPublish(true);

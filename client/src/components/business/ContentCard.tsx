@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { CloudLocation, CloudHeart, CloudMessage } from '../icons/CloudIcons';
 import { Avatar } from '../common/Avatar';
+import { ImageWithFallback } from '../common/ImageWithFallback';
 import { CATEGORIES, getContentImageHeight } from '../../data/constants';
 import type { ContentItem } from '../../data/contents';
 
@@ -17,7 +18,7 @@ export function ContentCard({ item, onClick }: ContentCardProps) {
   return (
     <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast" onClick={onClick}>
       <div className="relative">
-        <img
+        <ImageWithFallback
           src={item.image}
           alt={item.title}
           className="w-full object-cover bg-gray-100"
@@ -35,8 +36,8 @@ export function ContentCard({ item, onClick }: ContentCardProps) {
         </div>
         {item.hasCompanion && (
           <div className="flex gap-1.5 mb-2">
-            <button className="flex-1 bg-success/10 text-success text-[11px] font-medium py-1 rounded-full active:opacity-70">求搭子</button>
-            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/1`); }}>找向导</button>
+            <button className="flex-1 bg-success/10 text-success text-[11px] font-medium py-1 rounded-full touch-feedback active:scale-[0.97]" onClick={(e) => { e.stopPropagation(); navigate(`/user/${item.id}`); }}>求搭子</button>
+            <button className="flex-1 bg-primary/10 text-primary text-[11px] font-medium py-1 rounded-full touch-feedback active:scale-[0.97]" onClick={(e) => { e.stopPropagation(); navigate(`/guide/${item.id}`); }}>找向导</button>
           </div>
         )}
         <div className="flex items-center justify-between">

@@ -5,6 +5,8 @@ import { CloudStar, CloudMessage } from '../../components/icons/CloudIcons';
 import { Avatar } from '../../components/common/Avatar';
 import { MOCK_USERS } from '../../data/mock';
 import type { Guide, Review } from '../../data/mock';
+import type { GuideTheme } from './theme';
+import { findChatIdByGuideName } from '../../utils/navigation';
 
 interface PriceOption {
   key: 'hourly' | 'halfDay' | 'fullDay';
@@ -36,6 +38,14 @@ interface ServiceItem {
   title: string;
   items: string[];
 }
+
+interface ThemedDetailProps {
+  guide: Guide;
+  theme: GuideTheme;
+  backUrl: string;
+  reviews: Review[];
+}
+
 export function DefaultDetail({ guide, backUrl, reviews, prices, priceType, setPriceType, showBooking, setShowBooking, bookDate, setBookDate, bookTime, setBookTime }: DetailProps) {
   const navigate = useNavigate();
   
@@ -129,10 +139,10 @@ export function DefaultDetail({ guide, backUrl, reviews, prices, priceType, setP
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-divider px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-primary/10 text-primary text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-primary/10 text-primary text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]">
           <CloudMessage size={18} /> 聊一聊
         </button>
-        <button onClick={() => setShowBooking(true)} className="flex-[1.5] py-2.5 bg-primary text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
+        <button onClick={() => setShowBooking(true)} className="flex-[1.5] py-2.5 bg-primary text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
           style={{ boxShadow: '0 4px 12px rgba(59,130,246,0.3)' }}>
           立即预约 ¥{prices.find((p: PriceOption) => p.key === priceType)?.price}
         </button>
@@ -158,7 +168,7 @@ export function DefaultDetail({ guide, backUrl, reviews, prices, priceType, setP
                   className={`py-2 rounded-lg text-[13px] ${bookTime === t ? 'bg-primary text-white' : 'bg-background text-text-secondary'}`}>{t}</button>
               ))}
             </div>
-            <button className="w-full py-3 bg-primary text-white text-[16px] font-semibold rounded-xl active:opacity-70">确认预约</button>
+            <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=${bookDate}&time=${bookTime}&priceType=${priceType}&back=${encodeURIComponent(backUrl)}`)} className="w-full py-3 bg-primary text-white text-[16px] font-semibold rounded-xl active:scale-[0.97]">确认预约</button>
           </div>
         </div>
       )}
@@ -167,12 +177,12 @@ export function DefaultDetail({ guide, backUrl, reviews, prices, priceType, setP
 }
 
 // 密室逃脱详情页
-export function EscapeRoomDetail({ guide, backUrl, reviews }: any) {
+export function EscapeRoomDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#1A1A2E', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="密室详情" />
 
       {/* 顶部视频/图片区 */}
@@ -275,11 +285,11 @@ export function EscapeRoomDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-[#16213E] border-t border-[#2D3748] px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 border-2 border-[#6B46C1] text-[#6B46C1] text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 border-2 border-[#6B46C1] text-[#6B46C1] text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]">
           <CloudMessage size={18} /> 咨询坦克
         </button>
-        <button className="flex-[1.5] py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(255,107,53,0.4)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-[1.5] py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           加入队伍 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -289,12 +299,12 @@ export function EscapeRoomDetail({ guide, backUrl, reviews }: any) {
 }
 
 // 露营组队详情页
-export function CampingDetail({ guide, backUrl, reviews }: any) {
+export function CampingDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#F5F5DC', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="露营详情" />
 
       {/* 顶部大图区 */}
@@ -436,11 +446,11 @@ export function CampingDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#2D5A3D] text-[#2D5A3D] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#2D5A3D] text-[#2D5A3D] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询领队
         </button>
-        <button className="flex-1 py-2.5 bg-gradient-to-r from-[#2D5A3D] to-[#4A7C59] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(45,90,61,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-gradient-to-r from-[#2D5A3D] to-[#4A7C59] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           加入露营 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -450,12 +460,12 @@ export function CampingDetail({ guide, backUrl, reviews }: any) {
 }
 
 // 商务陪同详情页
-export function BusinessDetail({ guide, backUrl, reviews }: any) {
+export function BusinessDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#F8F9FA', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="商务陪同" />
 
       {/* 顶部形象区 */}
@@ -577,11 +587,11 @@ export function BusinessDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#1E3A5F] text-[#1E3A5F] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#1E3A5F] text-[#1E3A5F] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询详情
         </button>
-        <button className="flex-1 py-2.5 text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #2C5282 100%)', color: '#D4AF37', boxShadow: '0 4px 12px rgba(30,58,95,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ background: theme.gradientButton, color: theme.textOnPrimary, boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -591,12 +601,12 @@ export function BusinessDetail({ guide, backUrl, reviews }: any) {
 }
 
 // ==================== 摄影向导详情页 ====================
-export function PhotographyDetail({ guide, backUrl, reviews }: any) {
+export function PhotographyDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#FFFFFF', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="摄影服务" />
 
       {/* 顶部作品轮播 */}
@@ -669,7 +679,7 @@ export function PhotographyDetail({ guide, backUrl, reviews }: any) {
       {guide.services && (
         <div className="bg-white px-4 py-4">
           <h3 className="text-[15px] font-semibold text-[#1A365D] mb-3">拍摄服务</h3>
-          {guide.services.map((service: any, i: number) => (
+          {guide.services.map((service: ServiceItem, i: number) => (
             <div key={i} className="mb-4 last:mb-0">
               <div className="text-[14px] font-semibold text-[#4A90E2] mb-2">{service.title}</div>
               <div className="space-y-1">
@@ -692,7 +702,7 @@ export function PhotographyDetail({ guide, backUrl, reviews }: any) {
               <div className="flex items-center gap-2 mb-1">
                 <Avatar name={reviewer?.name || '客户'} size="xs" />
                 <span className="text-[13px] font-medium text-[#1A365D]">{reviewer?.name || '客户'}</span>
-                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: any, i: number) => <CloudStar key={i} size={12} color="#4A90E2" />)}</div>
+                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: unknown, i: number) => <CloudStar key={i} size={12} color="#4A90E2" />)}</div>
                 <span className="text-[11px] text-gray-500 ml-auto">{review.time}</span>
               </div>
               <p className="text-[13px] text-gray-600">{review.content}</p>
@@ -711,11 +721,11 @@ export function PhotographyDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#4A90E2] text-[#4A90E2] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#4A90E2] text-[#4A90E2] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询风格
         </button>
-        <button className="flex-1 py-2.5 bg-gradient-to-r from-[#4A90E2] to-[#3A7BC8] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(74,144,226,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-gradient-to-r from-[#4A90E2] to-[#3A7BC8] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -725,12 +735,12 @@ export function PhotographyDetail({ guide, backUrl, reviews }: any) {
 }
 
 // ==================== 美食向导详情页 ====================
-export function FoodDetail({ guide, backUrl, reviews }: any) {
+export function FoodDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#FFFCF5', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="美食探店" />
 
       {/* 顶部美食轮播 */}
@@ -784,9 +794,9 @@ export function FoodDetail({ guide, backUrl, reviews }: any) {
       {guide.schedule && (
         <div className="bg-white px-4 py-4">
           <h3 className="text-[15px] font-semibold text-[#7C2D12] mb-3">🗺️ 探店路线</h3>
-          {guide.schedule.map((day: any) => (
+          {guide.schedule.map((day: DaySchedule) => (
             <div key={day.day} className="space-y-3">
-              {day.items.map((item: any, i: number) => (
+              {day.items.map((item: { time: string; activity: string }, i: number) => (
                 <div key={i} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div className="w-3 h-3 bg-[#FF6B35] rounded-full" />
@@ -825,7 +835,7 @@ export function FoodDetail({ guide, backUrl, reviews }: any) {
               <div className="flex items-center gap-2 mb-1">
                 <Avatar name={reviewer?.name || '食客'} size="xs" />
                 <span className="text-[13px] font-medium text-[#7C2D12]">{reviewer?.name || '食客'}</span>
-                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: any, i: number) => <CloudStar key={i} size={12} color="#FF6B35" />)}</div>
+                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: unknown, i: number) => <CloudStar key={i} size={12} color="#FF6B35" />)}</div>
                 <span className="text-[11px] text-gray-500 ml-auto">{review.time}</span>
               </div>
               <p className="text-[13px] text-gray-600">{review.content}</p>
@@ -844,11 +854,11 @@ export function FoodDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-[#FED7AA] px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#FF6B35] text-[#FF6B35] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#FF6B35] text-[#FF6B35] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询路线
         </button>
-        <button className="flex-1 py-2.5 bg-gradient-to-r from-[#FF6B35] to-[#E85A26] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(255,107,53,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-gradient-to-r from-[#FF6B35] to-[#E85A26] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -858,12 +868,12 @@ export function FoodDetail({ guide, backUrl, reviews }: any) {
 }
 
 // ==================== 户外向导详情页 ====================
-export function OutdoorDetail({ guide, backUrl, reviews }: any) {
+export function OutdoorDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#F5F5F5', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="户外徒步" />
 
       {/* 顶部风景轮播 */}
@@ -943,9 +953,9 @@ export function OutdoorDetail({ guide, backUrl, reviews }: any) {
       {guide.schedule && (
         <div className="bg-white px-4 py-4">
           <h3 className="text-[15px] font-semibold text-[#14532D] mb-3">🗓️ 路线详情</h3>
-          {guide.schedule.map((day: any) => (
+          {guide.schedule.map((day: DaySchedule) => (
             <div key={day.day} className="space-y-3">
-              {day.items.map((item: any, i: number) => (
+              {day.items.map((item: { time: string; activity: string }, i: number) => (
                 <div key={i} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div className="w-3 h-3 bg-[#228B22] rounded-full" />
@@ -995,7 +1005,7 @@ export function OutdoorDetail({ guide, backUrl, reviews }: any) {
               <div className="flex items-center gap-2 mb-1">
                 <Avatar name={reviewer?.name || '队员'} size="xs" />
                 <span className="text-[13px] font-medium text-[#14532D]">{reviewer?.name || '队员'}</span>
-                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: any, i: number) => <CloudStar key={i} size={12} color="#228B22" />)}</div>
+                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: unknown, i: number) => <CloudStar key={i} size={12} color="#228B22" />)}</div>
                 <span className="text-[11px] text-gray-500 ml-auto">{review.time}</span>
               </div>
               <p className="text-[13px] text-gray-600">{review.content}</p>
@@ -1014,11 +1024,11 @@ export function OutdoorDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#228B22] text-[#228B22] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#228B22] text-[#228B22] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询路线
         </button>
-        <button className="flex-1 py-2.5 bg-gradient-to-r from-[#228B22] to-[#1A6B1A] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(34,139,34,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-gradient-to-r from-[#228B22] to-[#1A6B1A] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -1028,12 +1038,12 @@ export function OutdoorDetail({ guide, backUrl, reviews }: any) {
 }
 
 // ==================== 历史向导详情页 ====================
-export function HistoryDetail({ guide, backUrl, reviews }: any) {
+export function HistoryDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#FAF0E6', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="历史讲解" />
 
       {/* 顶部古建轮播 */}
@@ -1098,7 +1108,7 @@ export function HistoryDetail({ guide, backUrl, reviews }: any) {
       {guide.services && (
         <div className="bg-[#8B0000] px-4 py-4 text-white">
           <h3 className="text-[15px] font-semibold mb-3" style={{ color: '#FFD700' }}>讲解内容</h3>
-          {guide.services.map((service: any, i: number) => (
+          {guide.services.map((service: ServiceItem, i: number) => (
             <div key={i} className="mb-4 last:mb-0">
               <div className="text-[14px] font-semibold mb-2" style={{ color: '#FFD700' }}>{service.title}</div>
               <div className="space-y-1">
@@ -1133,7 +1143,7 @@ export function HistoryDetail({ guide, backUrl, reviews }: any) {
               <div className="flex items-center gap-2 mb-1">
                 <Avatar name={reviewer?.name || '游客'} size="xs" />
                 <span className="text-[13px] font-medium text-[#8B0000]">{reviewer?.name || '游客'}</span>
-                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: any, i: number) => <CloudStar key={i} size={12} color="#DAA520" />)}</div>
+                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: unknown, i: number) => <CloudStar key={i} size={12} color="#DAA520" />)}</div>
                 <span className="text-[11px] text-gray-500 ml-auto">{review.time}</span>
               </div>
               <p className="text-[13px] text-gray-600">{review.content}</p>
@@ -1152,11 +1162,11 @@ export function HistoryDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#8B0000] text-[#8B0000] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#8B0000] text-[#8B0000] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询路线
         </button>
-        <button className="flex-1 py-2.5 text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ background: 'linear-gradient(135deg, #8B0000 0%, #6B0000 100%)', color: '#FFD700', boxShadow: '0 4px 12px rgba(139,0,0,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ background: theme.gradientButton, color: theme.textOnPrimary, boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>
@@ -1166,12 +1176,12 @@ export function HistoryDetail({ guide, backUrl, reviews }: any) {
 }
 
 // ==================== 文艺向导详情页 ====================
-export function ArtDetail({ guide, backUrl, reviews }: any) {
+export function ArtDetail({ guide, theme, backUrl, reviews }: ThemedDetailProps) {
   const navigate = useNavigate();
   
   return (
     <SlideInPage>
-      <div style={{ backgroundColor: '#FFF0F5', minHeight: '100%' }}>
+      <div style={{ backgroundColor: theme.bgPrimary, minHeight: '100%' }}>
       <SubNavBar title="文艺探店" />
 
       {/* 顶部氛围轮播 */}
@@ -1232,9 +1242,9 @@ export function ArtDetail({ guide, backUrl, reviews }: any) {
       {guide.schedule && (
         <div className="bg-white px-4 py-4">
           <h3 className="text-[15px] font-semibold text-[#581c87] mb-3">🗺️ 探店路线</h3>
-          {guide.schedule.map((day: any) => (
+          {guide.schedule.map((day: DaySchedule) => (
             <div key={day.day} className="space-y-3">
-              {day.items.map((item: any, i: number) => (
+              {day.items.map((item: { time: string; activity: string }, i: number) => (
                 <div key={i} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div className="w-3 h-3 bg-[#9370DB] rounded-full" />
@@ -1273,7 +1283,7 @@ export function ArtDetail({ guide, backUrl, reviews }: any) {
               <div className="flex items-center gap-2 mb-1">
                 <Avatar name={reviewer?.name || '游客'} size="xs" />
                 <span className="text-[13px] font-medium text-[#581c87]">{reviewer?.name || '游客'}</span>
-                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: any, i: number) => <CloudStar key={i} size={12} color="#9370DB" />)}</div>
+                <div className="flex gap-0.5">{Array.from({ length: review.rating }).map((_: unknown, i: number) => <CloudStar key={i} size={12} color="#9370DB" />)}</div>
                 <span className="text-[11px] text-gray-500 ml-auto">{review.time}</span>
               </div>
               <p className="text-[13px] text-gray-600">{review.content}</p>
@@ -1292,11 +1302,11 @@ export function ArtDetail({ guide, backUrl, reviews }: any) {
       {/* 底部操作栏 */}
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white border-t border-gray-200 px-4 py-3 flex gap-3"
         style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
-        <button onClick={() => navigate(`/chat/2?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#9370DB] text-[#9370DB] text-[13px] font-semibold rounded-xl active:opacity-70">
+        <button onClick={() => navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=${encodeURIComponent(backUrl)}`)} className="py-2.5 px-4 border-2 border-[#9370DB] text-[#9370DB] text-[13px] font-semibold rounded-xl active:scale-[0.97]">
           💬 咨询路线
         </button>
-        <button className="flex-1 py-2.5 bg-gradient-to-r from-[#9370DB] to-[#7B5DB0] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:opacity-70"
-          style={{ boxShadow: '0 4px 12px rgba(147,112,219,0.3)' }}>
+        <button onClick={() => navigate(`/order/confirm?guideId=${guide.id}&date=今天&time=14:00&priceType=hourly&back=${encodeURIComponent(backUrl)}`)} className="flex-1 py-2.5 bg-gradient-to-r from-[#9370DB] to-[#7B5DB0] text-white text-[15px] font-semibold rounded-xl flex items-center justify-center gap-1.5 active:scale-[0.97]"
+          style={{ boxShadow: theme.shadow }}>
           立即预约 ¥{guide.pricePerPerson}
         </button>
       </div>

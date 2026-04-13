@@ -312,20 +312,23 @@ export const MOCK_CHATS: ChatItem[] = [
 export interface OrderItem {
   id: number;
   orderNo: string;
+  guideId: number;
   guideName: string;
   guideAvatar: string;
   service: string;
+  serviceType: 'hourly' | 'halfDay' | 'fullDay';
   date: string;
   time: string;
   amount: number;
+  serviceFee: number;
   status: 'pending' | 'paid' | 'serving' | 'completed' | 'cancelled';
 }
 
 export const MOCK_ORDERS: OrderItem[] = [
-  { id: 1, orderNo: 'YT20260412001', guideName: '小李', guideAvatar: img('guide1', 100, 100), service: '半日摄影向导', date: '2026-04-13', time: '14:00-18:00', amount: 350, status: 'paid' },
-  { id: 2, orderNo: 'YT20260410002', guideName: '阿花', guideAvatar: img('guide2', 100, 100), service: '全日美食探店', date: '2026-04-10', time: '10:00-18:00', amount: 380, status: 'completed' },
-  { id: 3, orderNo: 'YT20260408003', guideName: '大刘', guideAvatar: img('guide3', 100, 100), service: '半日徒步向导', date: '2026-04-08', time: '08:00-12:00', amount: 400, status: 'completed' },
-  { id: 4, orderNo: 'YT20260415004', guideName: '小周', guideAvatar: img('guide4', 100, 100), service: '全日历史讲解', date: '2026-04-15', time: '09:00-18:00', amount: 650, status: 'pending' },
+  { id: 1, orderNo: 'YT20260412001', guideId: 1, guideName: '小李', guideAvatar: img('guide1', 100, 100), service: '半日摄影向导', serviceType: 'halfDay', date: '2026-04-13', time: '14:00-18:00', amount: 350, serviceFee: 10, status: 'paid' },
+  { id: 2, orderNo: 'YT20260410002', guideId: 2, guideName: '阿花', guideAvatar: img('guide2', 100, 100), service: '全日美食探店', serviceType: 'fullDay', date: '2026-04-10', time: '10:00-18:00', amount: 380, serviceFee: 10, status: 'completed' },
+  { id: 3, orderNo: 'YT20260408003', guideId: 3, guideName: '大刘', guideAvatar: img('guide3', 100, 100), service: '半日徒步向导', serviceType: 'halfDay', date: '2026-04-08', time: '08:00-12:00', amount: 400, serviceFee: 10, status: 'completed' },
+  { id: 4, orderNo: 'YT20260415004', guideId: 4, guideName: '小周', guideAvatar: img('guide4', 100, 100), service: '全日历史讲解', serviceType: 'fullDay', date: '2026-04-15', time: '09:00-18:00', amount: 650, serviceFee: 10, status: 'pending' },
 ];
 
 // ==================== 新增：用户数据 ====================
@@ -444,3 +447,21 @@ export const MOCK_MESSAGES: ChatMessage[] = [
 
 // 再导出 MOCK_CONTENTS，方便二级页面使用
 export { MOCK_CONTENTS } from './contents';
+
+// 内容评论
+export interface ContentComment {
+  id: number;
+  name: string;
+  avatar: string;
+  content: string;
+  time: string;
+  likes: number;
+}
+
+export const MOCK_COMMENTS: ContentComment[] = [
+  { id: 1, name: '旅行者小张', avatar: 'user-comment1', content: '太美了！下次一定去', time: '1小时前', likes: 5 },
+  { id: 2, name: '摄影师阿明', avatar: 'user-comment2', content: '光线真好，用的什么设备？', time: '2小时前', likes: 3 },
+  { id: 3, name: '背包客小李', avatar: 'user-comment3', content: '上次去的时候人太多了，建议工作日去', time: '3小时前', likes: 8 },
+  { id: 4, name: '美食家晓晓', avatar: 'user-comment4', content: '附近有什么好吃的推荐吗？', time: '5小时前', likes: 2 },
+  { id: 5, name: '周末玩家', avatar: 'user-comment5', content: '收藏了，周末安排！', time: '昨天', likes: 1 },
+];

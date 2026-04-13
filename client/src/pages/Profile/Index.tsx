@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { CloudBuddy, CloudStar, CloudWallet, CloudShare, CloudShield, CloudSettings } from '../../components/icons/CloudIcons';
 import { Avatar } from '../../components/common/Avatar';
-import { MOCK_ORDERS } from '../../data/mock';
+import { MOCK_ORDERS, MOCK_GUIDES } from '../../data/mock';
+import { findChatIdByGuideName } from '../../utils/navigation';
 import { safeAreaTop } from '../../utils/safeArea';
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
@@ -23,7 +24,7 @@ export function ProfilePage() {
     <div style={safeAreaTop()}>
       <div className="bg-primary px-4 py-6 rounded-b-2xl">
         <div className="flex items-center gap-3">
-          <Avatar name="旅小友" size="xl" onlineStatus="online" onClick={() => navigate('/user/1')} />
+          <Avatar name="旅小友" size="xl" onlineStatus="online" />
           <div>
             <h2 className="text-[18px] font-bold text-white">旅小友</h2>
             <p className="text-[13px] text-primary-100">ID: 10086 · 杭州</p>
@@ -66,7 +67,7 @@ export function ProfilePage() {
       {showOrders && (
         <div className="px-4 mt-2 space-y-2">
           {MOCK_ORDERS.map(order => (
-            <div key={order.id} className="bg-card rounded-md p-3 shadow-card">
+            <div key={order.id} className="bg-card rounded-md p-3 shadow-card touch-feedback" onClick={() => navigate(`/order/${order.id}?back=/`)}>
               <div className="flex items-center gap-2.5 mb-2">
                 <img src={order.guideAvatar} alt={order.guideName} className="w-8 h-8 rounded-full object-cover" loading="lazy" />
                 <div className="flex-1">
@@ -80,13 +81,13 @@ export function ProfilePage() {
               <div className="flex items-center justify-between pt-2 border-t border-divider">
                 <span className="text-[15px] font-bold text-accent">¥{order.amount}</span>
                 {order.status === 'paid' && (
-                  <button className="px-3 py-1 text-[12px] text-primary bg-primary/10 rounded-full active:opacity-70">联系向导</button>
+                  <button onClick={(e) => { e.stopPropagation(); const guide = MOCK_GUIDES.find(g => g.name === order.guideName); if (guide) navigate(`/chat/${findChatIdByGuideName(guide.name) || guide.id}?back=/`); }} className="px-3 py-1 text-[12px] text-primary bg-primary/10 rounded-full touch-feedback active:scale-[0.97]">联系向导</button>
                 )}
                 {order.status === 'completed' && (
-                  <button className="px-3 py-1 text-[12px] text-primary bg-primary/10 rounded-full active:opacity-70">去评价</button>
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/review/${order.id}?back=/`); }} className="px-3 py-1 text-[12px] text-primary bg-primary/10 rounded-full touch-feedback active:scale-[0.97]">去评价</button>
                 )}
                 {order.status === 'pending' && (
-                  <button className="px-3 py-1 text-[12px] text-white bg-primary rounded-full active:opacity-70">去支付</button>
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/order/${order.id}?back=/`); }} className="px-3 py-1 text-[12px] text-white bg-primary rounded-full touch-feedback active:scale-[0.97]">去支付</button>
                 )}
               </div>
             </div>

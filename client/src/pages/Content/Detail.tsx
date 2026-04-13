@@ -1,33 +1,36 @@
 // 内容详情页 /content/:id
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SubNavBar, SlideInPage } from '../../components/layout/SubNavBar';
+import { useIdParam } from '../../utils/navigation';
 import { CloudHeart, CloudStar, CloudLocation, CloudShare, CloudBuddy } from '../../components/icons/CloudIcons';
 import { Avatar } from '../../components/common/Avatar';
-import { MOCK_CONTENTS, MOCK_USERS, MOCK_GUIDES } from '../../data/mock';
+import { ImageWithFallback } from '../../components/common/ImageWithFallback';
+import { MOCK_CONTENTS, MOCK_USERS, MOCK_GUIDES, MOCK_COMMENTS } from '../../data/mock';
+import { useTheme } from '../../hooks/useTheme';
 
 export default function ContentDetailPage() {
-  const { id } = useParams();
+  const contentId = useIdParam();
   const navigate = useNavigate();
-  const contentId = Number(id) || 0;
+  const [searchParams] = useSearchParams();
+  const backUrl = searchParams.get('back') || '/';
   const content = MOCK_CONTENTS.find(c => c.id === contentId);
+  const { cssVars, setThemeByCategory, colors } = useTheme();
+
+  // 根据内容分类自动切换主题
+  useEffect(() => {
+    if (content?.category) {
+      setThemeByCategory(content.category);
+    }
+  }, [content?.category, setThemeByCategory]);
   const [liked, setLiked] = useState(false);
   const [collected, setCollected] = useState(false);
   const [likeCount, setLikeCount] = useState(content?.likes || 0);
 
-  if (!content) return <SlideInPage><SubNavBar title="内容详情" /><div className="flex items-center justify-center h-64 text-text-tertiary">内容不存在</div></SlideInPage>;
+  if (!content) return <SlideInPage><SubNavBar title="内容详情" backUrl={backUrl} /><div className="flex items-center justify-center h-64 text-text-tertiary">内容不存在</div></SlideInPage>;
 
   const author = MOCK_USERS.find(u => u.name === content.userName);
   const nearbyGuides = MOCK_GUIDES.slice(0, 2);
-
-  // 模拟评论数据
-  const comments = [
-    { id: 1, name: '旅行者小张', avatar: 'user-comment1', content: '太美了！下次一定去', time: '1小时前', likes: 5 },
-    { id: 2, name: '摄影师阿明', avatar: 'user-comment2', content: '光线真好，用的什么设备？', time: '2小时前', likes: 3 },
-    { id: 3, name: '背包客小李', avatar: 'user-comment3', content: '上次去的时候人太多了，建议工作日去', time: '3小时前', likes: 8 },
-    { id: 4, name: '美食家晓晓', avatar: 'user-comment4', content: '附近有什么好吃的推荐吗？', time: '5小时前', likes: 2 },
-    { id: 5, name: '周末玩家', avatar: 'user-comment5', content: '收藏了，周末安排！', time: '昨天', likes: 1 },
-  ];
 
   const handleLike = () => {
     setLiked(!liked);
@@ -36,10 +39,11 @@ export default function ContentDetailPage() {
 
   return (
     <SlideInPage>
-      <SubNavBar title="内容详情" />
+      <div style={cssVars} className={colors.isDark ? 'bg-[var(--theme-bg)] text-[var(--theme-text-primary)]' : ''}>
+      <SubNavBar title="内容详情" backUrl={backUrl} />
 
       {/* 封面大图 */}
-      <img src={content.image} alt={content.title} className="w-full h-64 object-cover" />
+      <ImageWithFallback src={content.image} alt={content.title} className="w-full h-64 object-cover" />
 
       {/* 标题 + 位置 + 标签 */}
       <div className="px-4 py-3 border-b border-divider">
@@ -65,7 +69,7 @@ export default function ContentDetailPage() {
             <p className="text-[11px] text-text-tertiary">2小时前 · {content.location.split('·')[0]?.trim()}</p>
           </div>
         </div>
-        <button className="px-3 py-1 bg-primary text-white text-[12px] font-semibold rounded-full active:opacity-70">+ 关注</button>
+        <button className="px-3 py-1 bg-primary text-white text-[12px] font-semibold rounded-full touch-feedback active:scale-[0.97]">+ 关注</button>
       </div>
 
       {/* 正文 */}
@@ -90,7 +94,7 @@ export default function ContentDetailPage() {
                 </div>
                 <p className="text-[12px] text-text-secondary">¥{guide.priceHourly}/小时</p>
               </div>
-              <button className="px-3 py-1 bg-primary/10 text-primary text-[12px] font-semibold rounded-full active:opacity-70">立即预约</button>
+              <button className="px-3 py-1 bg-primary/10 text-primary text-[12px] font-semibold rounded-full touch-feedback active:scale-[0.97]">立即预约</button>
             </div>
           ))}
         </div>
@@ -99,7 +103,7 @@ export default function ContentDetailPage() {
       {/* 评论列表 */}
       <div className="px-4 py-3 pb-24">
         <h3 className="text-[15px] font-semibold text-text-primary mb-2">评论 ({content.comments})</h3>
-        {comments.map(comment => (
+        {MOCK_COMMENTS.map(comment => (
           <div key={comment.id} className="py-3 border-b border-divider last:border-0">
             <div className="flex items-center gap-2 mb-1">
               <Avatar name={comment.name} size="xs" />
@@ -132,14 +136,15 @@ export default function ContentDetailPage() {
         </div>
         {content.hasCompanion && (
           <div className="flex gap-2">
-            <button onClick={() => navigate(`/user/1?back=/content/${contentId}`)} className="flex-1 py-2 bg-success/10 text-success text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
+            <button onClick={() => navigate(`/user/${author?.id || 1}?back=/content/${contentId}`)} className="flex-1 py-2 bg-success/10 text-success text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 touch-feedback active:scale-[0.97]">
               <CloudBuddy size={14} /> 求搭子
             </button>
-            <button onClick={() => navigate(`/guide/1?back=/content/${contentId}`)} className="flex-1 py-2 bg-primary/10 text-primary text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 active:opacity-70">
+            <button onClick={() => navigate(`/guide/${nearbyGuides[0]?.id || 1}?back=/content/${contentId}`)} className="flex-1 py-2 bg-primary/10 text-primary text-[13px] font-semibold rounded-full flex items-center justify-center gap-1 touch-feedback active:scale-[0.97]">
               <CloudStar size={14} /> 找向导
             </button>
           </div>
         )}
+      </div>
       </div>
     </SlideInPage>
   );

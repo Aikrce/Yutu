@@ -1,5 +1,5 @@
 // 向导卡片组件
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CloudStar } from '../icons/CloudIcons';
 import { Avatar } from '../common/Avatar';
 import type { Guide } from '../../data/mock';
@@ -10,9 +10,11 @@ interface GuideCardProps {
 
 export function GuideCard({ guide }: GuideCardProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = encodeURIComponent(location.pathname + location.search);
 
   return (
-    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback" onClick={() => navigate(`/guide/${guide.id}`)}>
+    <div className="bg-card rounded-md overflow-hidden shadow-card touch-feedback" onClick={() => navigate(`/guide/${guide.id}?back=${backUrl}`)}>
       <div className="relative h-28">
         <img src={guide.coverImage} alt={guide.name} className="w-full h-full object-cover" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -46,7 +48,7 @@ export function GuideCard({ guide }: GuideCardProps) {
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[16px] font-bold text-accent">¥{guide.priceHourly}<span className="text-[11px] font-normal text-text-tertiary">/小时</span></span>
-          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/${guide.id}`); }}>立即预约</button>
+          <button className="px-4 py-1.5 bg-primary text-white text-[13px] font-medium rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/guide/${guide.id}?back=${backUrl}`); }}>立即预约</button>
         </div>
       </div>
     </div>

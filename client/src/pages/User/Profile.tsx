@@ -1,25 +1,29 @@
 // 用户个人主页 /user/:id
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { SubNavBar, SlideInPage } from '../../components/layout/SubNavBar';
+import { useIdParam } from '../../utils/navigation';
 import { CloudStar, CloudHeart, CloudLocation, CloudMessage } from '../../components/icons/CloudIcons';
 import { MOCK_USERS, MOCK_CONTENTS } from '../../data/mock';
 
 export default function UserProfilePage() {
-  const { id } = useParams();
+  const userId = useIdParam();
   const navigate = useNavigate();
-  const userId = Number(id) || 0;
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const backUrl = searchParams.get('back') || '/';
+  const currentPath = encodeURIComponent(location.pathname + location.search);
   const user = MOCK_USERS.find(u => u.id === userId);
   const [activeTab, setActiveTab] = useState<'publish' | 'favorite'>('publish');
   const [isFollowing, setIsFollowing] = useState(false);
 
-  if (!user) return <SlideInPage><SubNavBar title="用户主页" /><div className="flex items-center justify-center h-64 text-text-tertiary">用户不存在</div></SlideInPage>;
+  if (!user) return <SlideInPage><SubNavBar title="用户主页" backUrl={backUrl} /><div className="flex items-center justify-center h-64 text-text-tertiary">用户不存在</div></SlideInPage>;
 
   const userContents = MOCK_CONTENTS.filter(c => c.userName === user.name);
 
   return (
     <SlideInPage>
-      <SubNavBar title="个人主页" right={
+      <SubNavBar title="个人主页" backUrl={backUrl} right={
         <button className="text-[13px] text-text-tertiary">⋯</button>
       } />
 
@@ -51,7 +55,7 @@ export default function UserProfilePage() {
         <div className="flex items-center gap-2 mb-1">
           <h2 className="text-[18px] font-bold text-text-primary">{user.name}</h2>
           {user.isGuide && (
-            <button onClick={() => navigate(`/guide/${user.guideId}?back=/user/${userId}`)} className="text-[11px] bg-accent/10 text-accent px-2 py-0.5 rounded-full flex items-center gap-0.5">
+            <button onClick={() => navigate(`/guide/${user.guideId}?back=${currentPath}`)} className="text-[11px] bg-accent/10 text-accent px-2 py-0.5 rounded-full flex items-center gap-0.5">
               <CloudStar size={11} /> 查看向导页
             </button>
           )}
@@ -87,7 +91,7 @@ export default function UserProfilePage() {
             <div className="flex gap-2.5">
               <div className="flex-1 flex flex-col gap-2.5">
                 {userContents.filter((_, i) => i % 2 === 0).map(item => (
-                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=/user/${userId}`)}
+                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=${currentPath}`)}
                     className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast">
                     <img src={item.image} alt={item.title} className="w-full object-cover bg-gray-100" style={{ height: 120 + (item.id % 3) * 40 }} loading="lazy" />
                     <div className="p-2.5">
@@ -102,7 +106,7 @@ export default function UserProfilePage() {
               </div>
               <div className="flex-1 flex flex-col gap-2.5">
                 {userContents.filter((_, i) => i % 2 === 1).map(item => (
-                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=/user/${userId}`)}
+                  <div key={item.id} onClick={() => navigate(`/content/${item.id}?back=${currentPath}`)}
                     className="bg-card rounded-md overflow-hidden shadow-card touch-feedback active:scale-[0.97] transition-fast">
                     <img src={item.image} alt={item.title} className="w-full object-cover bg-gray-100" style={{ height: 120 + (item.id % 3) * 40 }} loading="lazy" />
                     <div className="p-2.5">

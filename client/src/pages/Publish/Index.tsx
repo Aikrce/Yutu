@@ -114,7 +114,7 @@ export function PublishPage({ onClose }: PublishPageProps) {
               </div>
               <textarea placeholder="说点什么，吸引搭子来..." rows={3} className="w-full text-[14px] py-2 resize-none border border-divider rounded-lg p-2" />
             </div>
-            <button className="w-full mt-6 py-3 bg-primary text-white text-[16px] font-semibold rounded-xl active:opacity-70">发布找搭子</button>
+            <button className="w-full mt-6 py-3 bg-primary text-white text-[16px] font-semibold rounded-xl touch-feedback active:scale-[0.97]">发布找搭子</button>
           </>
         )}
         {publishType === 'guide' && (
@@ -136,7 +136,7 @@ export function PublishPage({ onClose }: PublishPageProps) {
                 <div><p className="text-[14px] font-medium text-text-primary">灵活收入</p><p className="text-[12px] text-text-tertiary">自由定价，按单结算</p></div>
               </div>
             </div>
-            <button className="w-full py-3 bg-primary text-white text-[16px] font-semibold rounded-xl active:opacity-70">开始申请</button>
+            <button className="w-full py-3 bg-primary text-white text-[16px] font-semibold rounded-xl touch-feedback active:scale-[0.97]">开始申请</button>
           </div>
         )}
       </div>

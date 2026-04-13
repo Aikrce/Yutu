@@ -1,5 +1,5 @@
 // 搭子卡片组件
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MapPin, Clock, Users } from 'lucide-react';
 import { Avatar } from '../common/Avatar';
 import type { Buddy } from '../../data/mock';
@@ -10,9 +10,11 @@ interface BuddyCardProps {
 
 export function BuddyCard({ buddy }: BuddyCardProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = encodeURIComponent(location.pathname + location.search);
 
   return (
-    <div className="bg-card rounded-md p-3 shadow-card touch-feedback">
+    <div className="bg-card rounded-md p-3 shadow-card touch-feedback" onClick={() => navigate(`/user/${buddy.id + 6}?back=${backUrl}`)}>
       <div className="flex gap-3">
         <Avatar name={buddy.name} size="md" />
         <div className="flex-1 min-w-0">
@@ -38,8 +40,8 @@ export function BuddyCard({ buddy }: BuddyCardProps) {
         </div>
       </div>
       <div className="flex gap-2 mt-3 pt-2 border-t border-divider">
-        <button className="flex-1 py-1.5 text-[13px] font-medium text-primary bg-primary/10 rounded-full active:opacity-70">打招呼</button>
-        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70" onClick={() => navigate(`/user/${buddy.id + 6}`)}>一起玩</button>
+        <button className="flex-1 py-1.5 text-[13px] font-medium text-primary bg-primary/10 rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/chat/${buddy.id + 2}?back=${backUrl}`); }}>打招呼</button>
+        <button className="flex-1 py-1.5 text-[13px] font-medium text-white bg-primary rounded-full active:opacity-70" onClick={(e) => { e.stopPropagation(); navigate(`/user/${buddy.id + 6}?back=${backUrl}`); }}>一起玩</button>
       </div>
     </div>
   );

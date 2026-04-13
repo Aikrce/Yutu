@@ -1,17 +1,17 @@
 // 聊天详情页 /chat/:id
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SubNavBar, SlideInPage } from '../../components/layout/SubNavBar';
+import { useIdParam } from '../../utils/navigation';
 import { CloudStar } from '../../components/icons/CloudIcons';
 import { Send, Image as ImageIcon, Camera } from 'lucide-react';
-import { MOCK_CHATS, MOCK_MESSAGES, MOCK_USERS } from '../../data/mock';
+import { MOCK_CHATS, MOCK_MESSAGES, MOCK_USERS, MOCK_GUIDES } from '../../data/mock';
 import type { ChatMessage } from '../../data/mock';
 
 export default function ChatDetailPage() {
-  const { id } = useParams();
+  const chatId = useIdParam();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const chatId = Number(id) || 0;
   const backUrl = searchParams.get('back') || '/';
   const chat = MOCK_CHATS.find(c => c.id === chatId);
   const [inputText, setInputText] = useState('');
@@ -26,7 +26,7 @@ export default function ChatDetailPage() {
     }
   }, [messages]);
 
-  if (!chat) return <SlideInPage><SubNavBar title="聊天" /><div className="flex items-center justify-center h-64 text-text-tertiary">会话不存在</div></SlideInPage>;
+  if (!chat) return <SlideInPage><SubNavBar title="聊天" backUrl={backUrl} /><div className="flex items-center justify-center h-64 text-text-tertiary">会话不存在</div></SlideInPage>;
 
   const otherUser = MOCK_USERS.find(u => u.name === chat.name);
   const isGuide = chat.isGuide;
@@ -49,6 +49,7 @@ export default function ChatDetailPage() {
   return (
     <SlideInPage>
       <SubNavBar
+        backUrl={backUrl}
         title={
           <div className="flex items-center gap-1.5">
             <span>{chat.name}</span>
@@ -73,7 +74,10 @@ export default function ChatDetailPage() {
               </div>
               <p className="text-[12px] text-text-secondary">点击查看主页</p>
             </div>
-            <button onClick={() => navigate(`/guide/1`)} className="px-3 py-1 bg-primary text-white text-[11px] rounded-full active:opacity-70">预约</button>
+            <button onClick={() => {
+              const guide = MOCK_GUIDES.find(g => g.name === chat?.name);
+              if (guide) navigate(`/guide/${guide.id}?back=${encodeURIComponent(backUrl)}`);
+            }} className="px-3 py-1 bg-primary text-white text-[11px] rounded-full touch-feedback active:scale-[0.97]">预约</button>
           </div>
         )}
 

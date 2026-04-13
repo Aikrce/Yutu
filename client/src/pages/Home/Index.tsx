@@ -1,6 +1,6 @@
 // 瀑布流首页
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Avatar } from '../../components/common/Avatar';
 import { Input } from '../../components/common/Input';
 import { CloudBell, CloudSearch } from '../../components/icons/CloudIcons';
@@ -11,6 +11,8 @@ import { safeAreaTop } from '../../utils/safeArea';
 
 export function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backUrl = encodeURIComponent(location.pathname + location.search);
   const [category, setCategory] = useState('all');
   const [displayCount, setDisplayCount] = useState(WATERFALL_CONFIG.initialCount);
 
@@ -23,15 +25,24 @@ export function HomePage() {
     ? MOCK_CONTENTS
     : MOCK_CONTENTS.filter(c => c.category === category);
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - WATERFALL_CONFIG.scrollThreshold) {
-        setDisplayCount(prev => Math.min(prev + WATERFALL_CONFIG.loadMoreCount, filteredContents.length));
-      }
-    };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const loadMore = useCallback(() => {
+    setDisplayCount(prev => Math.min(prev + WATERFALL_CONFIG.loadMoreCount, filteredContents.length));
   }, [filteredContents.length]);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore();
+      },
+      { rootMargin: `${WATERFALL_CONFIG.scrollThreshold}px` },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
 
   const visibleContents = filteredContents.slice(0, displayCount);
@@ -54,7 +65,7 @@ export function HomePage() {
             </div>
             <div className="flex items-center gap-3">
               <CloudBell size={20} />
-              <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate('/user/1')} />
+              <Avatar name="旅小友" size="sm" onlineStatus="online" onClick={() => navigate(`/user/1?back=${backUrl}`)} />
             </div>
           </div>
           <Input prefix={<CloudSearch size={18} />} placeholder="搜索目的地、景点、美食..." inputSize="sm" className="bg-background" />
@@ -79,16 +90,16 @@ export function HomePage() {
       <div className="px-2.5">
         <div className="flex gap-2.5">
           <div className="flex-1 flex flex-col gap-2.5">
-            {leftCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
+            {leftCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}?back=${backUrl}`)} />)}
           </div>
           <div className="flex-1 flex flex-col gap-2.5">
-            {rightCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}`)} />)}
+            {rightCol.map(item => <ContentCard key={item.id} item={item} onClick={() => navigate(`/content/${item.id}?back=${backUrl}`)} />)}
           </div>
         </div>
       </div>
 
       {displayCount < filteredContents.length && (
-        <div className="py-4 text-center text-[13px] text-text-tertiary">加载更多...</div>
+        <div ref={sentinelRef} className="py-4 text-center text-[13px] text-text-tertiary">加载更多...</div>
       )}
     </div>
   );

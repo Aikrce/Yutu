@@ -12,6 +12,8 @@ export interface ContentItem {
   likes: number;
   comments: number;
   hasCompanion: boolean;
+  userId?: number;
+  guideId?: number;
 }
 
 // 图片使用 picsum.photos seed 方式，确保每张图稳定且可加载

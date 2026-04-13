@@ -12,7 +12,6 @@ export default function GuideDetailPage() {
   const id = useIdParam();
   const guide = MOCK_GUIDES.find(g => g.id === id);
   const backUrl = searchParams.get('back') || '/';
-  const theme = getGuideTheme(guide?.category);
   const [priceType, setPriceType] = useState<'hourly' | 'halfDay' | 'fullDay'>('hourly');
   const [showBooking, setShowBooking] = useState(false);
   const [bookDate, setBookDate] = useState('今天');
@@ -26,6 +25,8 @@ export default function GuideDetailPage() {
     { key: 'halfDay' as const, label: '半天', price: guide.priceHalfDay },
     { key: 'fullDay' as const, label: '全天', price: guide.priceFullDay },
   ];
+
+  const theme = getGuideTheme(guide.category);
 
   // 根据分类渲染不同的详情页
   if (guide.category === 'escape') {
