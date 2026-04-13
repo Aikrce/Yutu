@@ -1,0 +1,1 @@
+import{x as e}from"./createLucideIcon-C0Kf5ndI.js";import{n as t}from"./mock-BbVQ7xyr.js";function n(){let{id:t}=e();return Number(t)||0}function r(e){return t.find(t=>t.type===`user`&&t.name===e)?.id}export{n,r as t};
